@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bir teklifim var, Diana</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body>
+  <main class="container">
+    <!-- Ekran 1: Soru -->
+    <section id="screen-1" class="screen active">
+      <div class="top-label">Antalya · Yaz 2026</div>
+      <h1 class="title">Bir teklifim var, <em>Diana</em>.</h1>
+      <p class="subtitle">Sana DM'den sıkıcı bir "hey" atmak yerine, biraz renk katmak istedim. Ne dersin?</p>
+
+      <div class="visual">
+        <lottie-player id="sunset" src="https://assets9.lottiefiles.com/packages/lf20_jtbfg2nb.json"  background="transparent"  speed="1"  style="width:280px; height:220px;"  loop  autoplay></lottie-player>
+      </div>
+
+      <div class="controls">
+        <button id="yes-btn" class="btn yes">Evet, çıkarım 🌅</button>
+        <div class="no-wrapper">
+          <button id="no-btn" class="btn no">Hayır</button>
+          <div id="no-note" class="no-note">Hmm, tam basacaktın...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ekran 2: Randevu Tipi -->
+    <section id="screen-2" class="screen">
+      <div class="top-label">Harika seçim</div>
+      <h2>Peki nerede buluşalım?</h2>
+      <p class="subtitle">Sana en yakışanı seç; gerisini büyülü ellere bırakıyorum.</p>
+      <div class="cards">
+        <button class="card" data-type="Akşam Yemeği" data-desc="Mum ışığında uzun sohbet.">🍷 Akşam Yemeği</button>
+        <button class="card" data-type="Kahve" data-desc="Kısa, samimi ve iç ısıtan.">☕ Kahve</button>
+        <button class="card" data-type="Sahilde Yürüyüş" data-desc="Gün batımı ve çıplak ayak.">🌊 Sahilde Yürüyüş</button>
+        <button class="card" data-type="Sürpriz Rota" data-desc="Nereye? Sürpriz!">🗺️ Sürpriz Rota</button>
+      </div>
+      <div class="back-row">
+        <button id="back-to-1" class="link">Geri</button>
+      </div>
+    </section>
+
+    <!-- Ekran 3: Bilet -->
+    <section id="screen-3" class="screen">
+      <div class="top-label">Onaylandı</div>
+      <h2>Bilet <em>hazır.</em></h2>
+      <div class="ticket">
+        <div class="ticket-header">Randevu Bileti · No Refunds, Only Good Vibes</div>
+        <div class="ticket-body">
+          <div><strong>Tür:</strong> <span id="ticket-type"></span></div>
+          <div><strong>Yolcu:</strong> Diana</div>
+          <div><strong>Eşlik Eden:</strong> Ben :)</div>
+          <div><strong>Şehir:</strong> Antalya</div>
+          <div><strong>Bilet No:</strong> <span id="ticket-no">0000</span></div>
+          <div><strong>Not:</strong> <span id="ticket-note"></span></div>
+          <div class="barcode"><lottie-player src="https://assets8.lottiefiles.com/packages/lf20_t24tpvcu.json" background="transparent" speed="1" style="width:220px; height:60px;" loop autoplay></lottie-player></div>
+        </div>
+      </div>
+      <p class="tiny">Tarih ve saat için DM'den konuşuruz — bilet şimdiden cebinde 😄</p>
+      <div class="back-row">
+        <button id="restart" class="btn">Baştan başla</button>
+      </div>
+    </section>
+
+    <!-- Ekran 4: Gerçekten Hayır (final) -->
+    <section id="screen-4" class="screen">
+      <div class="top-label">Anlaşıldı</div>
+      <h2>Tamam, <em>saygı duyarım.</em></h2>
+      <div class="visual small">
+        <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_j3a7jh7a.json" background="transparent" speed="1" style="width:240px; height:240px;"  loop  autoplay></lottie-player>
+      </div>
+      <p class="subtitle">Bugün olmadı — olsun. Denemek bile güzeldi. Eğer fikrin değişirse kapı hep açık 🤍</p>
+      <div class="back-row">
+        <button id="back-from-no" class="btn">Fikrini değiştirirsen buraya tıkla</button>
+      </div>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

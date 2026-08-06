@@ -1,0 +1,42 @@
+:root{
+  --bg:#0f1724; --card:#0b1220; --accent:#ff7a59; --muted:#9aa4b2; --glass: rgba(255,255,255,0.04);
+}
+*{box-sizing:border-box;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#07102a 0%, #0f1724 100%);color:#e6eef6}
+
+.container{max-width:920px;margin:36px auto;padding:20px}
+.screen{display:none;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+.screen.active{display:block}
+.top-label{color:var(--muted);font-size:13px}
+h1.title{font-size:36px;margin:8px 0}
+h1.title em{color:var(--accent)}
+.subtitle{color:var(--muted);margin-bottom:18px}
+.visual{display:flex;justify-content:center;margin:14px 0}
+.controls{display:flex;gap:16px;align-items:center}
+.btn{background:linear-gradient(90deg,#17243a, #0f2136);border:1px solid rgba(255,255,255,0.04);color:#e9f2ff;padding:12px 18px;border-radius:10px;cursor:pointer;transition:transform .18s ease, box-shadow .18s}
+.btn:active{transform:scale(.98)}
+.btn.yes{background:linear-gradient(90deg,#ff9b6b,#ff6b90);box-shadow:0 6px 24px rgba(255,106,123,0.12);font-weight:700}
+.no-wrapper{position:relative}
+.no-note{position:absolute;left:0;top:48px;color:var(--muted);font-size:13px;width:220px}
+.btn.no{background:linear-gradient(90deg,#1c293a,#0e1a28);}
+.cards{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+.card{flex:1 1 180px;padding:14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
+.back-row{margin-top:16px}
+.link{background:none;border:none;color:var(--accent);cursor:pointer}
+.ticket{margin:18px 0;border-radius:12px;padding:12px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.03)}
+.ticket-header{font-weight:700;margin-bottom:8px}
+.ticket-body div{margin:6px 0}
+.barcode{margin-top:10px}
+.tiny{color:var(--muted);font-size:13px}
+.visual.small{margin:6px 0}
+
+/* Responsive */
+@media (max-width:520px){.container{padding:12px}.btn{padding:10px 12px}}
+
+/* Animations for evet growth */
+#yes-btn.grow{transform:scale(1.12);transition:transform .18s ease}
+#yes-btn.grow-big{transform:scale(1.45);transition:transform .25s cubic-bezier(.2,.9,.3,1)}
+
+/* helper for moving no button */
+.no-moving{position:relative;transition:transform .22s cubic-bezier(.2,.8,.28,1)}
