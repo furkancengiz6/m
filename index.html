@@ -909,10 +909,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+async function ensureRenderReady(){
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
+  // small delay to let layout settle
+  await new Promise(r=>setTimeout(r,150));
+}
 async function downloadTicketPNG(){
   const el = document.querySelector('.ticket');
   if(!el) return alert('Bilet bulunamadı');
-  const canvas = await html2canvas(el, {scale:2, backgroundColor:null});
+  await ensureRenderReady();
+  el.scrollIntoView({block:'center', inline:'center'});
+  const scale = Math.min(3, (window.devicePixelRatio || 1) * 2);
+  const canvas = await html2canvas(el, {scale, backgroundColor:null, useCORS:true, allowTaint:false});
   const dataUrl = canvas.toDataURL('image/png');
   const a = document.createElement('a');
   a.href = dataUrl;
@@ -925,7 +933,10 @@ async function downloadTicketPNG(){
 async function downloadTicketPDF(){
   const el = document.querySelector('.ticket');
   if(!el) return alert('Bilet bulunamadı');
-  const canvas = await html2canvas(el, {scale:2, backgroundColor:'#ffffff'});
+  await ensureRenderReady();
+  el.scrollIntoView({block:'center', inline:'center'});
+  const scale = Math.min(3, (window.devicePixelRatio || 1) * 2);
+  const canvas = await html2canvas(el, {scale, backgroundColor:'#ffffff', useCORS:true, allowTaint:false});
   const imgData = canvas.toDataURL('image/png');
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({orientation: canvas.width > canvas.height ? 'landscape' : 'portrait', unit:'px', format:[canvas.width, canvas.height]});
