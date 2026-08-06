@@ -435,7 +435,11 @@
       </div>
     </div>
     <p class="footer-note">Tarih ve saat için DM'den konuşuruz, bilet şimdiden kesildi 😄</p>
-    <button class="again" onclick="restart()">Baştan başla</button>
+    <div style="display:flex;gap:10px;justify-content:center;align-items:center;margin-top:12px;flex-wrap:wrap;">
+      <button class="again" onclick="downloadTicketPNG()">PNG İndir</button>
+      <button class="again" onclick="downloadTicketPDF()">PDF İndir</button>
+      <button class="again" onclick="restart()">Baştan başla</button>
+    </div>
   </div>
 
   <!-- SCREEN 4 : GERÇEKTEN HAYIR -->
@@ -899,6 +903,36 @@
       requestAnimationFrame(tick);
     }
   })();
+</script>
+
+<!-- download helpers -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+async function downloadTicketPNG(){
+  const el = document.querySelector('.ticket');
+  if(!el) return alert('Bilet bulunamadı');
+  const canvas = await html2canvas(el, {scale:2, backgroundColor:null});
+  const dataUrl = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  const name = (document.getElementById('ticketTitle')?.textContent || 'bilet').replace(/\s+/g,'_');
+  a.download = name + '.png';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+async function downloadTicketPDF(){
+  const el = document.querySelector('.ticket');
+  if(!el) return alert('Bilet bulunamadı');
+  const canvas = await html2canvas(el, {scale:2, backgroundColor:'#ffffff'});
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({orientation: canvas.width > canvas.height ? 'landscape' : 'portrait', unit:'px', format:[canvas.width, canvas.height]});
+  pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+  const name = (document.getElementById('ticketTitle')?.textContent || 'bilet').replace(/\s+/g,'_');
+  pdf.save(name + '.pdf');
+}
 </script>
 </body>
 </html>
