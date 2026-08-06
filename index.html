@@ -296,6 +296,22 @@
     0%,100%{ transform:translateY(0); }
     50%{ transform:translateY(3px); }
   }
+
+  /* Pixel boat scene */
+  .pixel-stage{
+    width:100%; max-width:460px; margin:0 auto 22px;
+    border-radius:14px; overflow:hidden;
+    border:1px solid rgba(243,230,200,0.18);
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    background:#0E3B45;
+  }
+  #boatCanvas{
+    display:block; width:100%; height:auto;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+  #skipBoat{ opacity:0.7; }
 </style>
 </head>
 <body>
@@ -355,6 +371,16 @@
       <button class="btn btn-no" id="noBtn">Hayır</button>
     </div>
     <span id="noHint"></span>
+  </div>
+
+  <!-- SCREEN 1.5 : PİKSEL SAHNE (İSKELE → YAT → GÜNEŞE DOĞRU) -->
+  <div class="screen" id="screenBoat">
+    <div class="eyebrow">Antalya · İskele</div>
+    <h1><em id="boatCaption">Kalbim küt küt atıyor...</em></h1>
+    <div class="pixel-stage">
+      <canvas id="boatCanvas" width="192" height="108"></canvas>
+    </div>
+    <button class="again" id="skipBoat" onclick="finishBoatScene()">Sahneyi geç ⏭</button>
   </div>
 
   <!-- SCREEN 2 : RANDEVU TİPİ -->
@@ -452,41 +478,88 @@
   const noLabels = [
     "Hayır",
     "Emin misin?",
+    "Gerçekten emin misin?",
+    "Son kez soruyorum, emin misin??",
+    "Bak pişman olacaksın...",
+    "Tamam iyi düşün...",
     "Gerçekten Hayır"
   ];
   const excuses = [
     "Hmm, tam basacaktın...",
     "Bir kere daha dener misin?",
-    "(Kesin seçim)"
+    "Hayır'ın özgüveni her denemede azalıyor.",
+    "İstatistiksel olarak bu iş artık Evet'te.",
+    "Hayır moralini toplamaya çalışıyor.",
+    "Hayır pes etti. Son bir kez daha basarsan gerçekten kabul ediyorum 👇",
   ];
-  const FINAL_TRY = 3;
+  const FINAL_TRY = 6;
   let tries = 0;
 
-  function handleNoClick(e){
-    e && e.preventDefault();
+  function moveNoButton(){
     tries++;
+    const maxX = Math.max(btnRow.clientWidth - noBtn.offsetWidth - 10, 40);
+    const maxY = Math.max(200 - noBtn.offsetHeight, 40);
+    const x = (Math.random() * maxX) - maxX/2;
+    const y = (Math.random() * maxY) - maxY/2;
+    noBtn.style.position = 'relative';
+    noBtn.style.left = x + 'px';
+    noBtn.style.top = y + 'px';
 
-    noBtn.textContent = noLabels[Math.min(tries-1, noLabels.length-1)];
+    noBtn.textContent = noLabels[Math.min(tries, noLabels.length-1)];
     noHint.textContent = excuses[Math.min(tries-1, excuses.length-1)];
 
-    // Evet butonunu belirgince büyüt
-    const scaleYes = Math.min(1 + tries * 0.25, 1.85);
-    yesBtn.style.transition = 'transform .2s cubic-bezier(.2,.8,.3,1)';
+    // Evet hafifçe büyüsün, Hayır hafifçe küçülsün — çok bastırmadan
+    const scaleYes = Math.min(1 + tries*0.03, 1.22);
     yesBtn.style.transform = `scale(${scaleYes})`;
-
-    // Hafif görsel tepki ver, ama kaçma yok
-    noBtn.style.transition = 'transform .18s ease, opacity .25s ease';
-    noBtn.style.transform = `scale(${Math.max(1 - tries*0.06, 0.88)})`;
-    noBtn.style.opacity = `${Math.max(1 - tries*0.05, 0.8)}`;
+    const scaleNo = Math.max(1 - tries*0.055, 0.62);
+    noBtn.style.transform = `scale(${scaleNo})`;
+    noBtn.style.opacity = Math.max(1 - tries*0.07, 0.55);
 
     if(tries >= FINAL_TRY){
-      // 3 basışta Hayır kazanır — göster final ekran
-      setTimeout(()=> goHeartbreak(), 600);
+      // artık kaçmıyor, tıklanabilir gerçek bir "hayır" oldu
+      noBtn.style.left = '';
+      noBtn.style.top = '';
+      noBtn.style.transform = 'scale(0.85)';
     }
   }
 
-  noBtn.addEventListener('click', handleNoClick);
-  noBtn.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') handleNoClick(e); });
+  let lastDodge = 0;
+  function maybeDodgeNear(clientX, clientY){
+    if(tries >= FINAL_TRY) return;
+    const now = Date.now();
+    if(now - lastDodge < 350) return; // dodge'lar arası nefes payı
+    const rect = noBtn.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const dist = Math.hypot(clientX - cx, clientY - cy);
+    const threshold = rect.width/2 + 46; // parmak/imleç yaklaşınca kaç
+    if(dist < threshold){
+      lastDodge = now;
+      moveNoButton();
+    }
+  }
+
+  noBtn.addEventListener('mouseenter', function(){
+    if(tries < FINAL_TRY) moveNoButton();
+  });
+  // Dokunmatik ekranlarda parmak yaklaşınca kaçsın (hover taklidi)
+  document.addEventListener('touchmove', function(e){
+    if(tries >= FINAL_TRY) return;
+    const t = e.touches[0];
+    if(t) maybeDodgeNear(t.clientX, t.clientY);
+  }, {passive:true});
+  noBtn.addEventListener('touchstart', function(e){
+    if(tries < FINAL_TRY){ e.preventDefault(); moveNoButton(); }
+    else { e.preventDefault(); goHeartbreak(); }
+  }, {passive:false});
+  noBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    if(tries < FINAL_TRY){
+      moveNoButton();
+    } else {
+      goHeartbreak();
+    }
+  });
 
   function goHeartbreak(){
     showScreen('screen4');
@@ -522,6 +595,12 @@
 
   function goDateType(){
     launchConfetti();
+    showScreen('screenBoat');
+    startBoatScene();
+  }
+
+  function finishBoatScene(){
+    stopBoatScene();
     showScreen('screen2');
   }
 
@@ -546,6 +625,7 @@
     noHint.textContent = '';
     const mh = document.getElementById('miniHearts');
     if(mh) mh.innerHTML = '';
+    stopBoatScene();
     showScreen('screen1');
   }
 
@@ -571,7 +651,206 @@
     }
   }
 
-  // Ambient sparkle particles — subtle, paused if user prefers reduced motion
+  // ---- PİKSEL SAHNE: İskele → El uzatma → Yat → Güneşe doğru ----
+  const boatCanvas = document.getElementById('boatCanvas');
+  const bctx = boatCanvas.getContext('2d');
+  const BW = boatCanvas.width, BH = boatCanvas.height;
+  const HORIZON = 62;
+  const boatCaption = document.getElementById('boatCaption');
+
+  const PAL = {
+    sky1:'#F6D186', sky2:'#F3A65B', sky3:'#E8703A', sky4:'#C85A3D',
+    sea1:'#175A66', sea2:'#0E3B45', sea3:'#0A2429',
+    sun:'#FFEFC7', sunGlow:'#FFD79A',
+    dock:'#8B5A2B', dockDark:'#6B3F1D',
+    skin:'#E8C39E', hair:'#3A2317', hairD:'#5A2A3A',
+    shirt:'#2E6F8E', pants:'#12343B',
+    dress:'#E38AA0', dressDark:'#C96C88',
+    hull:'#F3E6C8', hullTrim:'#0E3B45', sail:'#FBF3E4',
+    heart:'#E8703A'
+  };
+
+  let boatAnim = null;
+  let boatStart = null;
+
+  function px(x,y,w,h,color){ bctx.fillStyle = color; bctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); }
+
+  function drawSky(sunX){
+    px(0,0,BW,HORIZON*0.35,PAL.sky1);
+    px(0,HORIZON*0.35,BW,HORIZON*0.3,PAL.sky2);
+    px(0,HORIZON*0.65,BW,HORIZON*0.35,PAL.sky3);
+    // glow behind sun
+    for(let r=22; r>0; r-=4){
+      bctx.globalAlpha = 0.10;
+      bctx.fillStyle = PAL.sunGlow;
+      bctx.beginPath(); bctx.arc(sunX,HORIZON-6,r,0,Math.PI*2); bctx.fill();
+    }
+    bctx.globalAlpha = 1;
+    bctx.fillStyle = PAL.sun;
+    bctx.beginPath(); bctx.arc(sunX,HORIZON-6,9,0,Math.PI*2); bctx.fill();
+  }
+
+  function drawSea(t){
+    const rows = BH - HORIZON;
+    for(let i=0;i<rows;i++){
+      const y = HORIZON + i;
+      const shade = i < rows*0.35 ? PAL.sea1 : (i < rows*0.7 ? PAL.sea2 : PAL.sea3);
+      px(0,y,BW,1,shade);
+    }
+    // hareketli parıltı çizgileri
+    bctx.fillStyle = 'rgba(243,230,200,0.35)';
+    for(let i=0;i<14;i++){
+      const y = HORIZON + 4 + (i*6);
+      if(y >= BH) continue;
+      const offset = ( (t*22) + i*17 ) % (BW+20) - 20;
+      px(offset, y, 6, 1, 'rgba(243,230,200,0.3)');
+    }
+  }
+
+  function drawDock(){
+    px(0,HORIZON,72,4,PAL.dock);
+    px(0,HORIZON+4,72,2,PAL.dockDark);
+    for(let x=4;x<70;x+=12){
+      px(x,HORIZON+6,3,BH-(HORIZON+6),PAL.dockDark);
+    }
+  }
+
+  function drawHeart(cx,cy,scale,alpha){
+    bctx.globalAlpha = alpha;
+    px(cx-4*scale, cy-4*scale, 3*scale, 3*scale, PAL.heart);
+    px(cx+1*scale, cy-4*scale, 3*scale, 3*scale, PAL.heart);
+    px(cx-4*scale, cy-1*scale, 8*scale, 2*scale, PAL.heart);
+    px(cx-3*scale, cy+1*scale, 6*scale, 2*scale, PAL.heart);
+    px(cx-2*scale, cy+3*scale, 4*scale, 2*scale, PAL.heart);
+    px(cx-1*scale, cy+5*scale, 2*scale, 2*scale, PAL.heart);
+    bctx.globalAlpha = 1;
+  }
+
+  // person: x,y = ayak noktası (feet). dress=true -> Diana. armT: 0-1 kolun uzanma oranı, dir: 1 sağa / -1 sola
+  function drawPerson(x,y,dress,armT,dir){
+    const skin=PAL.skin;
+    // bacaklar
+    if(!dress){
+      px(x-2,y-6,2,6,PAL.pants);
+      px(x+1,y-6,2,6,PAL.pants);
+    } else {
+      px(x-3,y-6,6,6,PAL.dressDark);
+    }
+    // gövde / elbise
+    if(dress){
+      px(x-4,y-13,8,7,PAL.dress);
+    } else {
+      px(x-3,y-13,6,7,PAL.shirt);
+    }
+    // uzayan kol (el uzatma)
+    if(armT > 0){
+      const len = 10*armT;
+      px(x + dir*3, y-11, dir*len, 2, skin);
+      px(x + dir*(3+len), y-12, 2, 2, skin); // el
+    } else {
+      px(x + dir*3, y-11, dir*2, 5, skin);
+    }
+    // baş
+    px(x-2,y-19,5,5,skin);
+    // saç
+    if(dress){
+      px(x-3,y-21,7,3,PAL.hairD);
+      px(x-3,y-18,1,5,PAL.hairD);
+      px(x+3,y-18,1,5,PAL.hairD);
+    } else {
+      px(x-2,y-21,5,2,PAL.hair);
+    }
+  }
+
+  function drawYacht(x,y,scale,sailT){
+    // gövde
+    px(x-16*scale, y-2*scale, 32*scale, 5*scale, PAL.hull);
+    px(x-13*scale, y+3*scale, 26*scale, 2*scale, PAL.hullTrim);
+    // direk
+    px(x-1*scale, y-24*scale, 2*scale, 24*scale, PAL.hullTrim);
+    // yelken (hafif dalgalanma)
+    const flutter = Math.sin(sailT)*3*scale;
+    bctx.beginPath();
+    bctx.moveTo(x, y-22*scale);
+    bctx.lineTo(x + 15*scale + flutter, y-4*scale);
+    bctx.lineTo(x, y-4*scale);
+    bctx.closePath();
+    bctx.fillStyle = PAL.sail;
+    bctx.fill();
+  }
+
+  function ease(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function drawBoatFrame(elapsed){
+    const A = 2200;   // dock + kalp atışı
+    const B = 1500;   // el uzatma + biniş
+    const C = 4300;   // güneşe doğru yelken
+    const total = A+B+C;
+
+    bctx.clearRect(0,0,BW,BH);
+
+    let sunX = 150;
+    let seaT = elapsed/1000;
+
+    if(elapsed < A){
+      boatCaption.textContent = 'Kalbim küt küt atıyor...';
+      drawSky(sunX); drawSea(seaT); drawDock();
+      drawPerson(30, HORIZON+2, false, 0, 1);
+      drawPerson(48, HORIZON+2, true, 0, -1);
+      const pulse = 1 + 0.18*Math.sin(elapsed/180);
+      drawHeart(30, HORIZON-24, pulse, 0.95);
+      drawYacht(84, HORIZON+3, 1, elapsed/260);
+    }
+    else if(elapsed < A+B){
+      const t = ease((elapsed-A)/B);
+      boatCaption.textContent = 'Elimi uzatıyorum, gel...';
+      drawSky(sunX); drawSea(seaT); drawDock();
+      const meX = 30 + t*8;
+      const dianaX = 48 - t*18;
+      drawYacht(84, HORIZON+3, 1, elapsed/260);
+      drawPerson(meX, HORIZON+2, false, Math.min(t*2,1), 1);
+      drawPerson(dianaX, HORIZON+2, true, Math.min(t*2,1), -1);
+    }
+    else if(elapsed < total){
+      const t = (elapsed-A-B)/C; // 0..1
+      const et = ease(t);
+      boatCaption.textContent = t < 0.5 ? 'Güneşe doğru yelken açıyoruz 🌅' : 'Bu daha başlangıç...';
+      const boatX = 90 + et*95;
+      const boatScale = 1 - et*0.35;
+      const sX = 150 - et*10;
+      drawSky(sX); drawSea(seaT); 
+      if(et < 0.15) drawDock();
+      drawYacht(boatX, HORIZON+3, boatScale, elapsed/220);
+      // güvertede iki küçük figür
+      px(boatX-4*boatScale, HORIZON-5*boatScale, 3*boatScale, 6*boatScale, PAL.shirt);
+      px(boatX+1*boatScale, HORIZON-5*boatScale, 3*boatScale, 6*boatScale, PAL.dress);
+    }
+    else{
+      finishBoatScene();
+      return;
+    }
+
+    if(boatAnim) boatAnim = requestAnimationFrame(loop);
+  }
+
+  function loop(ts){
+    if(boatStart === null) boatStart = ts;
+    drawBoatFrame(ts - boatStart);
+  }
+
+  function startBoatScene(){
+    boatStart = null;
+    boatAnim = true;
+    boatAnim = requestAnimationFrame(loop);
+  }
+
+  function stopBoatScene(){
+    if(boatAnim) cancelAnimationFrame(boatAnim);
+    boatAnim = null;
+    boatStart = null;
+  }
+
+  // ---- Ambient parçacıklar ----
   (function(){
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
