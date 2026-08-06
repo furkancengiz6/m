@@ -19,15 +19,11 @@ const backTo1 = document.getElementById('back-to-1')
 const backFromNo = document.getElementById('back-from-no')
 
 let hayirCount = 0
-let maxHayir = 7
+let maxHayir = 3
 
 const hayirSteps = [
   {btn:'Hayır', note:'Hmm, tam basacaktın...'},
   {btn:'Emin misin?', note:'Bir kere daha dener misin?'},
-  {btn:'Gerçekten emin misin?', note:'Hayır\'ın özgüveni azalıyor.'},
-  {btn:'Son kez soruyorum, emin misin??', note:'İstatistikler Evet’e işaret ediyor.'},
-  {btn:'Bak pişman olacaksın...', note:'Hayır moralini toplamaya çalışıyor.'},
-  {btn:'Tamam iyi düşün...', note:'Hayır pes etti. Son basışta sürpriz var 👇'},
   {btn:'Gerçekten Hayır', note:'(Kesin seçim)'}
 ]
 
@@ -41,29 +37,32 @@ function updateNo(){
   const step = Math.min(hayirCount, hayirSteps.length-1)
   noBtn.textContent = hayirSteps[step].btn
   noNote.textContent = hayirSteps[step].note
-  // Evet büyümesi her tıklamada artar
-  const scale = 1 + Math.min(hayirCount * 0.12, 0.6)
+  // Evet büyümesi her tıklamada artar (daha belirgin)
+  const scale = 1 + Math.min(hayirCount * 0.25, 1.2)
   yesBtn.style.transform = `scale(${scale})`
+  yesBtn.classList.add('grow')
   if(hayirCount >= maxHayir){
     // Final: Hayır kazandı — Evet pes eder
-    yesBtn.classList.add('grow-big')
+    yesBtn.classList.remove('grow')
+    yesBtn.classList.add('grow-final')
     yesBtn.disabled = true
     noBtn.disabled = true
+    // kısa bir gecikme sonrası final ekran
     setTimeout(()=> showFinalHayirWins(), 700)
   }
 }
 
-// Hover: eğer henüz final değilse kaç
+// Hover: eğer henüz final değilse kaç (sadece ilk 2 denemede)
 noBtn.addEventListener('mouseenter', (e)=>{
-  if(hayirCount >= maxHayir) return
-  // taşıma: rastgele offset
-  const parent = noBtn.parentElement.getBoundingClientRect()
+  if(hayirCount >= (maxHayir - 1)) return // son adımda sabitlenir
+  // taşıma: rastgele offset daha yumuşak
   const container = document.querySelector('.container').getBoundingClientRect()
-  const maxX = Math.max(0, container.width - 120)
-  const maxY = Math.max(0, container.height - 40)
+  const maxX = Math.max(0, container.width - 140)
+  const maxY = Math.max(0, container.height - 80)
   const x = Math.floor(Math.random() * maxX)
   const y = Math.floor(Math.random() * maxY)
   noBtn.style.position = 'relative'
+  noBtn.style.transition = 'transform .22s cubic-bezier(.2,.8,.28,1)'
   noBtn.style.transform = `translate(${x - 20}px, ${y - 20}px)`
 })
 

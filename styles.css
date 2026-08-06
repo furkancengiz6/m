@@ -35,8 +35,8 @@ h1.title em{color:var(--accent)}
 @media (max-width:520px){.container{padding:12px}.btn{padding:10px 12px}}
 
 /* Animations for evet growth */
-#yes-btn.grow{transform:scale(1.12);transition:transform .18s ease}
-#yes-btn.grow-big{transform:scale(1.45);transition:transform .25s cubic-bezier(.2,.9,.3,1)}
+#yes-btn.grow{transform:scale(1.12);transition:transform .18s ease, box-shadow .18s;box-shadow:0 8px 30px rgba(255,106,123,0.12)}
+#yes-btn.grow-final{transform:scale(.6);transition:transform .6s ease, opacity .5s;opacity:.6;box-shadow:none}
 
 /* helper for moving no button */
 .no-moving{position:relative;transition:transform .22s cubic-bezier(.2,.8,.28,1)}
