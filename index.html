@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0E3B45">
-<title>Bir Teklifim Var...</title>
+<title>Bir Teklifim Var... ✨</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -14,7 +14,8 @@
     --sunset:#E8703A;
     --dusk-pink:#E8A5A0;
     --plum:#5A2A3A;
-    --ink:#0A2429;
+    --ink:#071F24;
+    --gold:#D4AF37;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   html,body{
@@ -25,21 +26,45 @@
     color:var(--sand);
     overflow-x:hidden;
   }
+  
+  /* Particle Canvas & Background FX */
   #particles{
     position:fixed; inset:0; z-index:0; pointer-events:none;
   }
   .wave-bg{
-    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.5;
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.55;
     background:
-      radial-gradient(circle at 20% 80%, rgba(232,112,58,0.15), transparent 40%),
-      radial-gradient(circle at 80% 10%, rgba(232,165,160,0.12), transparent 45%);
+      radial-gradient(circle at 20% 80%, rgba(232,112,58,0.22), transparent 45%),
+      radial-gradient(circle at 80% 10%, rgba(232,165,160,0.2), transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(255,215,0,0.06), transparent 60%);
+    filter: blur(20px);
   }
+
+  /* Audio Control Floating Badge */
+  .sound-btn{
+    position:fixed; top:18px; right:18px; z-index:100;
+    background:rgba(14, 59, 69, 0.85);
+    border:1.5px solid rgba(243,230,200,0.35);
+    color:var(--sand);
+    padding:9px 16px; border-radius:30px;
+    font-size:13.5px; font-weight:500; font-family:'Poppins',sans-serif;
+    cursor:pointer; backdrop-filter:blur(10px);
+    display:flex; align-items:center; gap:8px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+    transition:all 0.25s ease;
+  }
+  .sound-btn:hover{
+    background:rgba(232,112,58,0.3);
+    border-color:var(--sunset);
+    transform:scale(1.05);
+  }
+
   .stage{
     position:relative; z-index:1;
     min-height:100vh;
     min-height:100dvh;
     display:flex; align-items:center; justify-content:center;
-    padding:calc(32px + env(safe-area-inset-top)) 18px calc(32px + env(safe-area-inset-bottom));
+    padding:calc(48px + env(safe-area-inset-top)) 18px calc(32px + env(safe-area-inset-bottom));
   }
   .screen{
     display:none;
@@ -56,34 +81,49 @@
   .eyebrow{
     letter-spacing:0.35em; text-transform:uppercase;
     font-size:11px; color:var(--dusk-pink); font-weight:600;
-    margin-bottom:18px;
+    margin-bottom:14px;
+    display:inline-block;
+    padding:5px 14px;
+    background:rgba(232,165,160,0.12);
+    border-radius:20px;
+    border:1px solid rgba(232,165,160,0.25);
   }
   h1{
     font-family:'Playfair Display', serif;
     font-weight:700;
-    font-size:clamp(32px, 6vw, 52px);
+    font-size:clamp(32px, 6.2vw, 54px);
     line-height:1.15;
     color:var(--sand);
     margin-bottom:14px;
+    text-shadow:0 2px 10px rgba(0,0,0,0.3);
   }
   h1 em{ color:var(--sunset); font-style:italic; }
   p.sub{
-    font-size:15px; color:#CBDEE0; line-height:1.7;
-    max-width:440px; margin:0 auto 28px;
+    font-size:15px; color:#CBDEE0; line-height:1.75;
+    max-width:460px; margin:0 auto 28px;
+    font-weight:300;
   }
 
+  /* SVG Hero Scene (Interactive) */
   .hero-art{
-    width:100%; max-width:420px; margin:0 auto 32px;
-    border-radius:20px; overflow:hidden;
-    box-shadow:0 20px 50px rgba(0,0,0,0.35);
-    border:1px solid rgba(243,230,200,0.15);
+    width:100%; max-width:440px; margin:0 auto 32px;
+    border-radius:22px; overflow:hidden;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+    border:1px solid rgba(243,230,200,0.2);
+    position:relative;
+    cursor:pointer;
+    transition:transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hero-art:hover{
+    transform:translateY(-4px);
+    box-shadow:0 30px 70px rgba(232,112,58,0.25);
   }
   .hero-art svg{ display:block; width:100%; height:auto; }
 
   .sun-pulse{ animation: sunPulse 4.5s ease-in-out infinite; transform-origin:210px 118px; }
   @keyframes sunPulse{
-    0%,100%{ transform:scale(1); opacity:1; }
-    50%{ transform:scale(1.06); opacity:0.92; }
+    0%,100%{ transform:scale(1); opacity:1; filter:drop-shadow(0 0 10px rgba(255,233,199,0.8)); }
+    50%{ transform:scale(1.08); opacity:0.95; filter:drop-shadow(0 0 25px rgba(255,215,0,0.9)); }
   }
   .wave-line{ animation: waveDrift 6s ease-in-out infinite; }
   .wave-2{ animation-duration:7.5s; animation-direction:reverse; }
@@ -92,13 +132,20 @@
     0%,100%{ transform:translateX(0); }
     50%{ transform:translateX(14px); }
   }
-  .boat-bob{ animation: boatBob 3.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+  .boat-bob{ animation: boatBob 3.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; cursor:pointer; }
   @keyframes boatBob{
     0%,100%{ transform:translate(255px,150px) rotate(0deg); }
-    50%{ transform:translate(255px,146px) rotate(-2deg); }
+    50%{ transform:translate(255px,145px) rotate(-2.5deg); }
   }
 
-  /* Question screen */
+  .interactive-hint{
+    position:absolute; bottom:8px; right:12px;
+    font-size:11px; color:rgba(243,230,200,0.75);
+    background:rgba(10,36,41,0.65); backdrop-filter:blur(4px);
+    padding:4px 10px; border-radius:12px; pointer-events:none;
+  }
+
+  /* Question screen buttons */
   .btn-row{
     position:relative;
     display:flex; gap:20px; justify-content:center; align-items:center;
@@ -109,146 +156,223 @@
     border:none; border-radius:100px;
     font-family:'Poppins',sans-serif; font-weight:600; font-size:16px;
     cursor:pointer;
-    transition: transform 0.15s ease, background 0.2s ease, box-shadow .2s ease;
-    padding:16px 34px;
+    transition: transform 0.18s cubic-bezier(.2,.8,.3,1), background 0.2s ease, box-shadow .2s ease;
+    padding:16px 36px;
     touch-action:manipulation;
     user-select:none;
     -webkit-user-select:none;
-    min-height:44px;
+    min-height:48px;
   }
   .btn-yes{
     background: linear-gradient(135deg, var(--sunset), #C9502A);
     color:#FFF3E9;
-    box-shadow:0 8px 24px rgba(232,112,58,0.35);
+    box-shadow:0 8px 24px rgba(232,112,58,0.38);
     animation: yesGlow 2.6s ease-in-out infinite;
+    position:relative; z-index:2;
   }
   @keyframes yesGlow{
-    0%,100%{ box-shadow:0 8px 24px rgba(232,112,58,0.35); }
-    50%{ box-shadow:0 8px 30px rgba(232,112,58,0.65), 0 0 0 6px rgba(232,112,58,0.08); }
+    0%,100%{ box-shadow:0 8px 24px rgba(232,112,58,0.38); }
+    50%{ box-shadow:0 8px 36px rgba(232,112,58,0.7), 0 0 0 8px rgba(232,112,58,0.12); }
   }
-  .btn-yes:hover{ transform:scale(1.06); }
+  .btn-yes:hover{ transform:scale(1.08) !important; }
   .btn-no{
-    background:transparent;
+    background:rgba(243,230,200,0.05);
     border:1.5px solid rgba(243,230,200,0.4);
     color:var(--sand);
     position:relative;
+    backdrop-filter:blur(6px);
   }
   #noHint{
-    display:block; margin-top:14px; font-size:12.5px; color:#8FB3B8; min-height:18px;
+    display:block; margin-top:14px; font-size:13px; color:#9FC3C7; min-height:22px;
     font-style:italic;
   }
 
-  /* Date type screen */
-  .options{
-    display:grid; grid-template-columns:1fr 1fr; gap:14px;
-    margin-top:6px;
+  /* Pixel Boat & Date Scenes */
+  .pixel-stage{
+    width:100%; max-width:480px; margin:0 auto 18px;
+    border-radius:18px; overflow:hidden;
+    border:1px solid rgba(243,230,200,0.25);
+    box-shadow:0 25px 60px rgba(0,0,0,0.5);
+    background:#0E3B45;
+    position:relative;
+    cursor:crosshair;
   }
-  @media (max-width:420px){ .options{grid-template-columns:1fr;} }
-  .option{
-    background:rgba(243,230,200,0.06);
-    border:1px solid rgba(243,230,200,0.18);
-    border-radius:16px;
-    padding:22px 16px;
-    cursor:pointer;
-    transition: all .2s ease;
-    text-align:left;
-    animation: fieldIn 0.5s ease both;
+  #boatCanvas, #datePixelCanvas{
+    display:block; width:100%; height:auto;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
   }
-  .option:nth-child(1){ animation-delay:0.05s; }
-  .option:nth-child(2){ animation-delay:0.12s; }
-  .option:nth-child(3){ animation-delay:0.19s; }
-  .option:nth-child(4){ animation-delay:0.26s; }
-  .option:hover{
-    background:rgba(232,112,58,0.14);
-    border-color:var(--sunset);
-    transform:translateY(-3px);
+  .pixel-hint{
+    position:absolute; top:10px; right:12px;
+    font-size:11px; color:rgba(255,255,255,0.85);
+    background:rgba(10,36,41,0.7); backdrop-filter:blur(4px);
+    padding:4px 10px; border-radius:12px; pointer-events:none;
+    border:1px solid rgba(255,255,255,0.15);
   }
-  .option .ic{font-size:26px; display:block; margin-bottom:10px;}
-  .option .ttl{font-weight:600; font-size:15px; color:var(--sand); margin-bottom:4px;}
-  .option .dsc{font-size:12.5px; color:#9FC3C7; line-height:1.5;}
+  .pixel-controls{
+    display:flex; justify-content:center; gap:12px; margin-top:12px; flex-wrap:wrap;
+  }
 
-  /* Ticket screen */
+  /* Date selection screen */
+  .options{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    margin-top:10px;
+    perspective:1000px;
+  }
+  @media (max-width:440px){ .options{grid-template-columns:1fr;} }
+  .option{
+    background:rgba(243,230,200,0.07);
+    border:1px solid rgba(243,230,200,0.2);
+    border-radius:18px;
+    padding:22px 18px;
+    cursor:pointer;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    text-align:left;
+    backdrop-filter:blur(10px);
+    transform-style:preserve-3d;
+    position:relative;
+    overflow:hidden;
+  }
+  .option::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(232,112,58,0.15), transparent);
+    opacity:0; transition:opacity 0.3s ease;
+  }
+  .option:hover{
+    background:rgba(232,112,58,0.16);
+    border-color:var(--sunset);
+    box-shadow:0 12px 30px rgba(232,112,58,0.25);
+  }
+  .option:hover::before{ opacity:1; }
+  .option .ic{font-size:28px; display:block; margin-bottom:10px; transform:translateZ(20px);}
+  .option .ttl{font-weight:600; font-size:16px; color:var(--sand); margin-bottom:6px; transform:translateZ(15px);}
+  .option .dsc{font-size:13px; color:#A2C6CB; line-height:1.5; transform:translateZ(10px);}
+
+  /* Ticket Screen - ULTRA CRISP HIGH CONTRAST STYLING */
+  .ticket-container{
+    perspective:1200px;
+    margin-top:10px;
+  }
   .ticket{
-    background:linear-gradient(135deg, #FBF3E4, #F3E6C8);
-    color:var(--ink);
-    border-radius:20px;
+    background: #FFF8EB;
+    background-image: linear-gradient(135deg, #FFFDF8 0%, #F5E6C4 100%);
+    color:#071F24 !important;
+    border-radius:24px;
     text-align:left;
     overflow:hidden;
-    box-shadow:0 30px 60px rgba(0,0,0,0.35);
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
     position:relative;
+    border:2px solid #D4AF37;
+    transition:transform 0.4s cubic-bezier(.2,.8,.3,1);
+    transform-style:preserve-3d;
   }
   .ticket-top{
-    padding:26px 26px 20px;
-    background: linear-gradient(120deg, var(--deep-sea-2), var(--deep-sea));
-    color:var(--sand);
+    padding:28px 28px 22px;
+    background: linear-gradient(125deg, #0A323B, #071F24);
+    color:#F3E6C8;
     position:relative;
   }
   .ticket-top .tag{
-    font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--dusk-pink); font-weight:600;
+    font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color:#E8A5A0; font-weight:700;
   }
   .ticket-top h2{
-    font-family:'Playfair Display',serif; font-size:26px; margin-top:6px;
+    font-family:'Playfair Display',serif; font-size:28px; margin-top:6px; color:#FFF3E9; font-weight:700;
   }
   .perf{
-    height:2px;
-    background-image: radial-gradient(circle, var(--deep-sea) 3px, transparent 3.5px);
-    background-size: 16px 2px;
+    height:4px;
+    background-image: radial-gradient(circle, #071F24 3.5px, transparent 4px);
+    background-size: 16px 4px;
     background-repeat: repeat-x;
     position:relative;
   }
   .notch{
-    position:absolute; width:26px; height:26px; background:var(--deep-sea); border-radius:50%;
-    top:-13px;
+    position:absolute; width:28px; height:28px; background:#071F24; border-radius:50%;
+    top:-14px;
   }
-  .notch.left{left:-13px;}
-  .notch.right{right:-13px;}
-  .ticket-body{ padding:22px 26px 26px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .notch.left{left:-14px;}
+  .notch.right{right:-14px;}
+  .ticket-body{ 
+    padding:26px 28px 28px; 
+    display:grid; 
+    grid-template-columns:1fr 1fr; 
+    gap:18px;
+    background:#FFF6E5;
+  }
   .field{ animation: fieldIn 0.5s ease both; }
-  .field:nth-child(1){ animation-delay:0.05s; }
-  .field:nth-child(2){ animation-delay:0.12s; }
-  .field:nth-child(3){ animation-delay:0.19s; }
-  .field:nth-child(4){ animation-delay:0.26s; }
-  .field:nth-child(5){ animation-delay:0.33s; }
-  .field:nth-child(6){ animation-delay:0.4s; }
   @keyframes fieldIn{
     from{ opacity:0; transform:translateY(8px); }
     to{ opacity:1; transform:translateY(0); }
   }
-  .field{ }
-  .field .lbl{ font-size:9.5px; text-transform:uppercase; letter-spacing:.15em; color:#8A7A5A; font-weight:600; margin-bottom:3px;}
-  .field .val{ font-size:15px; font-weight:600; color:var(--ink); font-family:'Playfair Display',serif;}
+  .field .lbl{ 
+    font-size:10.5px; 
+    text-transform:uppercase; 
+    letter-spacing:.18em; 
+    color:#6E562A !important; 
+    font-weight:700; 
+    margin-bottom:4px;
+  }
+  .field .val{ 
+    font-size:17px; 
+    font-weight:700; 
+    color:#071F24 !important; 
+    font-family:'Playfair Display',serif;
+    text-shadow:none !important;
+  }
   .field.full{ grid-column:1 / -1; }
   .barcode{
-    margin-top:6px; height:34px;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px);
-    opacity:0.75; border-radius:3px;
+    margin-top:8px; height:40px;
+    background: repeating-linear-gradient(90deg, #071F24 0 2.5px, transparent 2.5px 5.5px, #071F24 5.5px 8px, transparent 8px 11px);
+    opacity:0.95; border-radius:4px;
   }
 
   .footer-note{
-    margin-top:26px; font-size:12.5px; color:#8FB3B8;
+    margin-top:24px; font-size:13.5px; color:#A8CBCF; line-height:1.6;
   }
+  .action-btns{
+    display:flex; gap:12px; justify-content:center; align-items:center; margin-top:18px; flex-wrap:wrap;
+  }
+  .btn-action{
+    background:rgba(243,230,200,0.08);
+    border:1px solid rgba(243,230,200,0.25);
+    color:var(--sand);
+    padding:10px 20px; border-radius:30px;
+    font-size:13px; font-weight:500; font-family:'Poppins',sans-serif;
+    cursor:pointer; transition:all 0.2s ease; backdrop-filter:blur(6px);
+  }
+  .btn-action:hover{
+    background:rgba(232,112,58,0.25);
+    border-color:var(--sunset);
+    transform:translateY(-2px);
+  }
+  .btn-action.highlight{
+    background:linear-gradient(135deg, var(--sunset), #C9502A);
+    border:none; color:#FFF3E9; box-shadow:0 6px 20px rgba(232,112,58,0.3);
+  }
+  .btn-action.highlight:hover{
+    transform:translateY(-2px) scale(1.03);
+    box-shadow:0 8px 25px rgba(232,112,58,0.5);
+  }
+
   .again{
     margin-top:18px; background:none; border:none; color:var(--dusk-pink);
-    text-decoration:underline; cursor:pointer; font-size:13px; font-family:'Poppins',sans-serif;
+    text-decoration:underline; cursor:pointer; font-size:13.5px; font-family:'Poppins',sans-serif;
   }
 
   .confetti{
-    position:fixed; top:-10px; z-index:5; pointer-events:none;
-    border-radius:2px; opacity:0.9;
+    position:fixed; top:-10px; z-index:99; pointer-events:none;
+    border-radius:2px; opacity:0.95;
   }
 
-  /* Heartbreak screen */
+  /* Heartbreak Screen */
   .heartbreak-art{
-    width:100%; max-width:280px; margin:0 auto 22px;
+    width:100%; max-width:290px; margin:0 auto 22px;
   }
   .heartbreak-art svg{ display:block; width:100%; height:auto; overflow:visible; }
-  .heart-half{
-    transform-origin:150px 130px;
-  }
+  .heart-half{ transform-origin:150px 130px; }
   .heart-half.left{ animation: shakeThenCrackLeft 1.7s cubic-bezier(.22,.9,.32,1) both; }
   .heart-half.right{ animation: shakeThenCrackRight 1.7s cubic-bezier(.22,.9,.32,1) both; }
   @keyframes shakeThenCrackLeft{
-    0%,100%{}
     0%{ transform:translate(0,0) rotate(0deg); }
     8%{ transform:translate(-2px,0) rotate(-1deg); }
     16%{ transform:translate(2px,0) rotate(1deg); }
@@ -267,11 +391,8 @@
     100%{ transform:translate(11px,16px) rotate(6deg); }
   }
   .mini-heart{
-    position:absolute;
-    font-size:14px;
-    opacity:0;
-    animation: floatHeart 3.2s ease-in infinite;
-    pointer-events:none;
+    position:absolute; font-size:14px; opacity:0;
+    animation: floatHeart 3.2s ease-in infinite; pointer-events:none;
   }
   @keyframes floatHeart{
     0%{ transform:translateY(0) scale(0.6); opacity:0; }
@@ -279,54 +400,47 @@
     80%{ opacity:0.5; }
     100%{ transform:translateY(-90px) scale(1); opacity:0; }
   }
-  #tear{
-    animation: tearFall 1.8s ease-in 0.6s infinite;
-  }
+  #tear{ animation: tearFall 1.8s ease-in 0.6s infinite; }
   @keyframes tearFall{
     0%{ transform:translateY(0); opacity:0; }
     15%{ opacity:1; }
     70%{ opacity:1; }
     100%{ transform:translateY(22px); opacity:0; }
   }
-  .figure-bob{
-    animation: bob 3.2s ease-in-out infinite;
-    transform-origin:150px 210px;
-  }
-  @keyframes bob{
-    0%,100%{ transform:translateY(0); }
-    50%{ transform:translateY(3px); }
-  }
 
-  /* Pixel boat scene */
-  .pixel-stage{
-    width:100%; max-width:460px; margin:0 auto 22px;
-    border-radius:14px; overflow:hidden;
-    border:1px solid rgba(243,230,200,0.18);
-    box-shadow:0 20px 50px rgba(0,0,0,0.35);
-    background:#0E3B45;
+  /* Toast Notification */
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px);
+    background:rgba(10, 36, 41, 0.95); color:var(--sand);
+    border:1px solid var(--sunset); padding:12px 24px; border-radius:30px;
+    font-size:13.5px; font-weight:500; z-index:200; backdrop-filter:blur(10px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.5); opacity:0;
+    transition:transform 0.35s cubic-bezier(.2,.8,.3,1), opacity 0.35s ease;
   }
-  #boatCanvas{
-    display:block; width:100%; height:auto;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+  .toast.show{
+    transform:translateX(-50%) translateY(0); opacity:1;
   }
-  #skipBoat{ opacity:0.7; }
 </style>
 </head>
 <body>
 
+<button class="sound-btn" id="soundToggle" onclick="toggleAudio()">
+  <span id="soundIcon">🌅</span> <span id="soundText">Gün Batımı Müziği</span>
+</button>
+
 <canvas id="particles"></canvas>
 <div class="wave-bg"></div>
+
 <div class="stage">
 
   <!-- SCREEN 1 : SORU -->
   <div class="screen active" id="screen1">
     <div class="eyebrow">Antalya · Yaz 2026</div>
     <h1>Bir teklifim var,<br><em>Diana</em>.</h1>
-    <p class="sub">Seninle çok ama çok tanışmak istiyorum. DM'den öyle "antin kuntin" laflar benim tarzım değil, o yüzden aklıma bunu yapmak geldi.</p>
+    <p class="sub">Seninle çok ama çok tanışmak istiyorum. DM'den öyle sıradan mesajlar atmak istemedim, o yüzden senin için interaktif minik bir sürpriz hazırladım ✨</p>
 
-    <div class="hero-art" aria-hidden="true">
+    <div class="hero-art" id="heroArtSvg" onclick="triggerHeroClick(event)" aria-label="Gün batımı sahnesi (Tıklayabilirsin!)">
+      <div class="interactive-hint">Tıkla & Kalp Çıkar! 💖</div>
       <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -340,12 +454,16 @@
           </linearGradient>
           <radialGradient id="sun" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="#FFE9C7"/>
-            <stop offset="100%" stop-color="#F3B37A"/>
+            <stop offset="60%" stop-color="#F3B37A"/>
+            <stop offset="100%" stop-color="#E8703A"/>
           </radialGradient>
         </defs>
         <rect width="420" height="220" fill="url(#sky)"/>
-        <circle class="sun-pulse" cx="210" cy="118" r="46" fill="url(#sun)"/>
+        <!-- Sun -->
+        <circle class="sun-pulse" cx="210" cy="118" r="48" fill="url(#sun)"/>
+        <!-- Sea -->
         <rect y="128" width="420" height="92" fill="url(#sea)"/>
+        <!-- Animated Waves -->
         <g class="wave-line wave-1" opacity="0.5" stroke="#F3E6C8" stroke-width="2" stroke-linecap="round">
           <path d="M20 150 q20 -8 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" fill="none"/>
         </g>
@@ -355,13 +473,17 @@
         <g class="wave-line wave-3" opacity="0.5" stroke="#F3E6C8" stroke-width="2" stroke-linecap="round">
           <path d="M10 194 q20 -8 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" fill="none"/>
         </g>
+        <!-- Boat -->
         <g class="boat-bob" transform="translate(255,150)">
           <path d="M0 40 L70 40 L58 55 L10 55 Z" fill="#F3E6C8"/>
           <rect x="30" y="4" width="3" height="38" fill="#F3E6C8"/>
           <path d="M33 6 L33 34 L58 34 Z" fill="#E8A5A0"/>
         </g>
-        <g fill="#12222" opacity="0.9">
-          <path d="M330 210 q10 -30 25 -34 q-8 20 -6 34 Z" fill="#0A2429"/>
+        <!-- Palm Tree Silhouette -->
+        <g fill="#0A2429" opacity="0.95">
+          <path d="M360 220 q-10 -40 -30 -60 q25 10 38 -5 q-15 25 -8 65 Z"/>
+          <path d="M330 160 q-25 -10 -40 -5 q25 0 35 12 Z"/>
+          <path d="M330 160 q10 -25 30 -30 q-15 15 -18 32 Z"/>
         </g>
       </svg>
     </div>
@@ -373,79 +495,104 @@
     <span id="noHint"></span>
   </div>
 
-  <!-- SCREEN 1.5 : PİKSEL SAHNE (İSKELE → YAT → GÜNEŞE DOĞRU) -->
+  <!-- SCREEN 1.5 : PİKSEL SAHNE 1 (İSKELE → EL UZATMA → YAT → GÜNEŞE DOĞRU) -->
   <div class="screen" id="screenBoat">
-    <div class="eyebrow">Antalya · İskele</div>
+    <div class="eyebrow">Piksel Animasyon #1 · Antalya İskele</div>
     <h1><em id="boatCaption">Kalbim küt küt atıyor...</em></h1>
-    <div class="pixel-stage">
+    <div class="pixel-stage" onclick="triggerPixelClick(event)">
+      <div class="pixel-hint">Ekrana tıkla & Havai fişek patlat! 🎆</div>
       <canvas id="boatCanvas" width="192" height="108"></canvas>
     </div>
-    <button class="again" id="skipBoat" onclick="finishBoatScene()">Sahneyi geç ⏭</button>
+    <div class="pixel-controls">
+      <button class="btn-action" onclick="replayBoatScene()">Tekrar İzle 🔄</button>
+      <button class="btn-action highlight" onclick="finishBoatScene()">Buluşma Yeri Seç 🍷 ➔</button>
+    </div>
   </div>
 
   <!-- SCREEN 2 : RANDEVU TİPİ -->
   <div class="screen" id="screen2">
-    <div class="eyebrow">Harika seçim</div>
+    <div class="eyebrow">Harika Karar</div>
     <h1>Peki nerede <em>buluşalım?</em></h1>
-    <p class="sub">Sana en çok yakışanı seç, gerisini ben ayarlarım.</p>
+    <p class="sub">Sana en çok uyan seçeneğe tıkla, sana özel piksel animasyonu izleyelim ✨</p>
     <div class="options">
-      <div class="option" onclick="selectDate('Akşam Yemeği','Mumlu masa, iyi şarap, uzun sohbet.')">
+      <div class="option" onclick="selectDateOption('Akşam Yemeği','Mumlu masa, lezzetli yemekler & uzun sohbet.')">
         <span class="ic">🍷</span>
         <div class="ttl">Akşam Yemeği</div>
-        <div class="dsc">Mumlu masa, uzun sohbet.</div>
+        <div class="dsc">Mumlu masa, şık mekan, baş başa sohbet.</div>
       </div>
-      <div class="option" onclick="selectDate('Kahve','Kısa, samimi, ilk adım için ideal.')">
+      <div class="option" onclick="selectDateOption('Kahve & Tatlı','Kısa, samimi, kahkahası bol ilk adım.')">
         <span class="ic">☕</span>
-        <div class="ttl">Kahve</div>
-        <div class="dsc">Kısa ve samimi, ilk adım.</div>
+        <div class="ttl">Kahve & Tatlı</div>
+        <div class="dsc">Kısa ve samimi, tatlı ilk adım.</div>
       </div>
-      <div class="option" onclick="selectDate('Sahilde Yürüyüş','Gün batımı, deniz kokusu, iyi ayakkabı.')">
+      <div class="option" onclick="selectDateOption('Sahilde Yürüyüş','Gün batımı, deniz kokusu & tatlı rüzgar.')">
         <span class="ic">🌊</span>
         <div class="ttl">Sahilde Yürüyüş</div>
-        <div class="dsc">Gün batımı eşliğinde.</div>
+        <div class="dsc">Gün batımı eşliğinde deniz kokulu yürüyüş.</div>
       </div>
-      <div class="option" onclick="selectDate('Sürpriz Rota','Nereye gideceğimizi ben biliyorum, sen sadece gel.')">
+      <div class="option" onclick="selectDateOption('Sürpriz Rota','Nereye gideceğimizi ben biliyorum, sen sadece hazır ol.')">
         <span class="ic">🗺️</span>
         <div class="ttl">Sürpriz Rota</div>
-        <div class="dsc">Nereye gideceğiz, sır.</div>
+        <div class="dsc">Detaylar bende saklı, sadece hazırlan.</div>
       </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2.5 : PİKSEL SAHNE 2 (SEÇİLEN BULUŞMA YERİNE ÖZEL PİKSEL ANİMASYON) -->
+  <div class="screen" id="screenDatePixel">
+    <div class="eyebrow" id="datePixelEyebrow">Özel Buluşma Sahnesi</div>
+    <h1><em id="datePixelCaption">Seninle geçireceğimiz anlar...</em></h1>
+    <div class="pixel-stage" onclick="triggerDatePixelClick(event)">
+      <div class="pixel-hint">Tıkla & Işıltı Saç! ✨</div>
+      <canvas id="datePixelCanvas" width="192" height="108"></canvas>
+    </div>
+    <div class="pixel-controls">
+      <button class="btn-action" onclick="replayDatePixelScene()">Tekrar İzle 🔄</button>
+      <button class="btn-action highlight" onclick="goTicketScreen()">Biletini Al 🎟️ ➔</button>
     </div>
   </div>
 
   <!-- SCREEN 3 : BİLET -->
   <div class="screen" id="screen3">
-    <div class="eyebrow">Onaylandı</div>
-    <h1>Bilet <em>hazır.</em></h1>
-    <div class="ticket">
-      <div class="ticket-top">
-        <div class="tag">Randevu Bileti · No Refunds, Only Good Vibes</div>
-        <h2 id="ticketTitle">Akşam Yemeği</h2>
-      </div>
-      <div class="perf"><span class="notch left"></span><span class="notch right"></span></div>
-      <div class="ticket-body">
-        <div class="field"><div class="lbl">Yolcu</div><div class="val">Diana</div></div>
-        <div class="field"><div class="lbl">Eşlik Eden</div><div class="val">Ben :)</div></div>
-        <div class="field"><div class="lbl">Şehir</div><div class="val">Antalya</div></div>
-        <div class="field"><div class="lbl">Bilet No</div><div class="val" id="ticketNo">#0000</div></div>
-        <div class="field full"><div class="lbl">Not</div><div class="val" id="ticketDesc" style="font-size:13.5px; font-weight:400; font-family:'Poppins',sans-serif;">—</div></div>
-        <div class="field full">
-          <div class="lbl">Onay</div>
-          <div class="barcode"></div>
+    <div class="eyebrow">Biletin Hazır!</div>
+    <h1>Özel Randevu <em>Bileti</em></h1>
+    
+    <div class="ticket-container">
+      <div class="ticket" id="ticketCard">
+        <div class="ticket-top">
+          <div class="tag">V.I.P BULUŞMA BİLETİNİZ · NO REFUNDS, ONLY GOOD VIBES</div>
+          <h2 id="ticketTitle">Akşam Yemeği</h2>
+        </div>
+        <div class="perf"><span class="notch left"></span><span class="notch right"></span></div>
+        <div class="ticket-body">
+          <div class="field"><div class="lbl">YOLCU / MİSAFİR</div><div class="val">Diana</div></div>
+          <div class="field"><div class="lbl">EV SAHİBİ</div><div class="val">Ben :)</div></div>
+          <div class="field"><div class="lbl">KONUM</div><div class="val">Antalya</div></div>
+          <div class="field"><div class="lbl">BİLET KODU</div><div class="val" id="ticketNo">#2026-LOVE</div></div>
+          <div class="field full"><div class="lbl">DETAY / KONSEPT</div><div class="val" id="ticketDesc" style="font-size:15px; font-weight:600; font-family:'Poppins',sans-serif;">—</div></div>
+          <div class="field full">
+            <div class="lbl">BİLET ONAY BARKODU</div>
+            <div class="barcode"></div>
+          </div>
         </div>
       </div>
     </div>
-    <p class="footer-note">Tarih ve saat için DM'den konuşuruz, bilet şimdiden kesildi 😄</p>
-    <div style="display:flex;gap:10px;justify-content:center;align-items:center;margin-top:12px;flex-wrap:wrap;">
-      <button class="again" onclick="downloadTicketPNG()">PNG İndir</button>
-      <button class="again" onclick="downloadTicketPDF()">PDF İndir</button>
-      <button class="again" onclick="restart()">Baştan başla</button>
+
+    <p class="footer-note">Tarih ve saati DM'den rahatça konuşuruz. Biletin şimdiden hazır! 😄</p>
+    
+    <div class="action-btns">
+      <button class="btn-action highlight" onclick="openWhatsAppDirect()">💬 WhatsApp'tan Gönder</button>
+      <button class="btn-action" onclick="copyInvitationText()">📋 Mesajı Kopyala</button>
+      <button class="btn-action" onclick="downloadTicketPNG()">🖼️ PNG İndir (Net Yüksek Kalite)</button>
+      <button class="btn-action" onclick="downloadTicketPDF()">📄 PDF İndir</button>
     </div>
+    <button class="again" onclick="restart()">Baştan Seç 🔄</button>
   </div>
 
   <!-- SCREEN 4 : GERÇEKTEN HAYIR -->
   <div class="screen" id="screen4">
     <div class="eyebrow">Anlaşıldı</div>
-    <h1>Tamam, <em>saygı duyarım.</em></h1>
+    <h1>Canın sağ olsun, <em>saygı duyarım.</em></h1>
 
     <div class="heartbreak-art" id="heartbreakArt" aria-hidden="true" style="position:relative;">
       <div class="mini-hearts" id="miniHearts" style="position:absolute; inset:0; overflow:visible;"></div>
@@ -467,13 +614,181 @@
       </svg>
     </div>
 
-    <p class="sub">Bugün olmadı, sorun değil — bunu denemek bile güzeldi. İnşallah bir gün gerçekten tanışmak istersin 🤍</p>
-    <button class="again" onclick="restart()">Fikrini değiştirirsen buraya tıkla</button>
+    <p class="sub">Şansımı denemek istedim. Saygı duyuyorum — yine de tebessüm ettirebildiysem ne mutlu bana 🤍</p>
+    <button class="again" onclick="restart()">Fikrini değiştirirsen buraya tıkla 🥰</button>
   </div>
 
 </div>
 
+<div class="toast" id="toast">Mesaj kopyalandı! 💌</div>
+
+<!-- Download helpers -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
+  /* ----------------------------------------------------
+     GÜN BATIMI AMBİENT MÜZİK SYNTHESIZER (Lush Sunset Pad)
+  ---------------------------------------------------- */
+  let audioCtx = null;
+  let audioEnabled = false;
+  let sunsetOscs = [];
+  let sunsetGain = null;
+  let waveTimer = null;
+
+  function initAudio(){
+    if(!audioCtx){
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+    }
+    if(audioCtx.state === 'suspended'){
+      audioCtx.resume();
+    }
+  }
+
+  function toggleAudio(){
+    initAudio();
+    audioEnabled = !audioEnabled;
+    const icon = document.getElementById('soundIcon');
+    const text = document.getElementById('soundText');
+    if(audioEnabled){
+      icon.textContent = '🌅';
+      text.textContent = 'Müzik Açık';
+      startSunsetMusic();
+      playChime();
+    } else {
+      icon.textContent = '🔇';
+      text.textContent = 'Müzik Kapalı';
+      stopSunsetMusic();
+    }
+  }
+
+  // Warm Sunset Chords Progression: Fmaj7 -> Cmaj7 -> Dm7 -> Bbmaj7
+  const chordProgression = [
+    [174.61, 220.00, 261.63, 329.63], // Fmaj7 (F3, A3, C4, E4)
+    [130.81, 196.00, 246.94, 329.63], // Cmaj7 (C3, G3, B3, E4)
+    [146.83, 174.61, 220.00, 261.63], // Dm7 (D3, F3, A3, C4)
+    [116.54, 146.83, 174.61, 220.00]  // Bbmaj7 (Bb2, D3, F3, A3)
+  ];
+  let chordIndex = 0;
+
+  function startSunsetMusic(){
+    if(!audioCtx || !audioEnabled) return;
+    stopSunsetMusic();
+    try {
+      sunsetGain = audioCtx.createGain();
+      sunsetGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+      sunsetGain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 2.5);
+      
+      // Lowpass filter for warm sunset vibe
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(650, audioCtx.currentTime);
+      
+      sunsetGain.connect(filter);
+      filter.connect(audioCtx.destination);
+
+      playChordStep(filter);
+      waveTimer = setInterval(() => {
+        if(audioEnabled) playChordStep(filter);
+      }, 5500);
+    } catch(e){}
+  }
+
+  function playChordStep(destination){
+    if(!audioCtx || !audioEnabled) return;
+    const freqs = chordProgression[chordIndex];
+    chordIndex = (chordIndex + 1) % chordProgression.length;
+
+    freqs.forEach(freq => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      
+      // Warm subtle vibrato
+      const lfo = audioCtx.createOscillator();
+      const lfoGain = audioCtx.createGain();
+      lfo.frequency.value = 3 + Math.random()*2;
+      lfoGain.gain.value = 1.2;
+      lfo.connect(osc.frequency);
+      lfo.start();
+
+      g.gain.setValueAtTime(0.001, audioCtx.currentTime);
+      g.gain.linearRampToValueAtTime(0.035, audioCtx.currentTime + 2.0);
+      g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 5.2);
+
+      osc.connect(g);
+      g.connect(sunsetGain);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 5.5);
+      sunsetOscs.push(osc, lfo);
+    });
+  }
+
+  function stopSunsetMusic(){
+    if(waveTimer){ clearInterval(waveTimer); waveTimer = null; }
+    sunsetOscs.forEach(o => { try{ o.stop(); }catch(e){} });
+    sunsetOscs = [];
+  }
+
+  function playPop(){
+    if(!audioCtx || !audioEnabled) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime + 0.09);
+      gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.09);
+    } catch(e){}
+  }
+
+  function playChime(){
+    if(!audioCtx || !audioEnabled) return;
+    try {
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.09);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.09 + 0.45);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + idx * 0.09);
+        osc.stop(audioCtx.currentTime + idx * 0.09 + 0.45);
+      });
+    } catch(e){}
+  }
+
+  function playDodgeSound(){
+    if(!audioCtx || !audioEnabled) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(650, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(320, audioCtx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
+    } catch(e){}
+  }
+
+
+  /* ----------------------------------------------------
+     DODGE BUTTON "HAYIR" LOGIC
+  ---------------------------------------------------- */
   const noBtn = document.getElementById('noBtn');
   const yesBtn = document.getElementById('yesBtn');
   const noHint = document.getElementById('noHint');
@@ -482,27 +797,29 @@
   const noLabels = [
     "Hayır",
     "Emin misin?",
-    "Gerçekten emin misin?",
-    "Son kez soruyorum, emin misin??",
-    "Bak pişman olacaksın...",
-    "Tamam iyi düşün...",
+    "Gerçekten mi? 😮",
+    "Son kararın mı?",
+    "Bak kaçırıyorsun...",
+    "Pes ettim sayılır...",
     "Gerçekten Hayır"
   ];
   const excuses = [
     "Hmm, tam basacaktın...",
-    "Bir kere daha dener misin?",
-    "Hayır'ın özgüveni her denemede azalıyor.",
-    "İstatistiksel olarak bu iş artık Evet'te.",
-    "Hayır moralini toplamaya çalışıyor.",
-    "Hayır pes etti. Son bir kez daha basarsan gerçekten kabul ediyorum 👇",
+    "Bir kere daha dener misin? 😉",
+    "Hayır seçeneği şu an çok utangaç...",
+    "İstatistiksel olarak ibre 'Evet'i gösteriyor!",
+    "Son bir şans daha ver sanırım 😇",
+    "Tamam, son kez basarsan kabul edeceğim 👇"
   ];
   const FINAL_TRY = 6;
   let tries = 0;
 
   function moveNoButton(){
+    initAudio();
+    playDodgeSound();
     tries++;
     const maxX = Math.max(btnRow.clientWidth - noBtn.offsetWidth - 10, 40);
-    const maxY = Math.max(200 - noBtn.offsetHeight, 40);
+    const maxY = Math.max(180 - noBtn.offsetHeight, 40);
     const x = (Math.random() * maxX) - maxX/2;
     const y = (Math.random() * maxY) - maxY/2;
     noBtn.style.position = 'relative';
@@ -512,17 +829,15 @@
     noBtn.textContent = noLabels[Math.min(tries, noLabels.length-1)];
     noHint.textContent = excuses[Math.min(tries-1, excuses.length-1)];
 
-    // Evet hafifçe büyüsün, Hayır hafifçe küçülsün — çok bastırmadan
-    const scaleYes = Math.min(1 + tries*0.03, 1.22);
+    const scaleYes = Math.min(1 + tries*0.04, 1.25);
     yesBtn.style.transform = `scale(${scaleYes})`;
-    const scaleNo = Math.max(1 - tries*0.055, 0.62);
+    const scaleNo = Math.max(1 - tries*0.05, 0.65);
     noBtn.style.transform = `scale(${scaleNo})`;
-    noBtn.style.opacity = Math.max(1 - tries*0.07, 0.55);
+    noBtn.style.opacity = Math.max(1 - tries*0.06, 0.6);
 
     if(tries >= FINAL_TRY){
-      // artık kaçmıyor, tıklanabilir gerçek bir "hayır" oldu
-      noBtn.style.left = '';
-      noBtn.style.top = '';
+      noBtn.style.left = '0px';
+      noBtn.style.top = '0px';
       noBtn.style.transform = 'scale(0.85)';
     }
   }
@@ -531,31 +846,29 @@
   function maybeDodgeNear(clientX, clientY){
     if(tries >= FINAL_TRY) return;
     const now = Date.now();
-    if(now - lastDodge < 350) return; // dodge'lar arası nefes payı
+    if(now - lastDodge < 350) return;
     const rect = noBtn.getBoundingClientRect();
     const cx = rect.left + rect.width/2;
     const cy = rect.top + rect.height/2;
     const dist = Math.hypot(clientX - cx, clientY - cy);
-    const threshold = rect.width/2 + 46; // parmak/imleç yaklaşınca kaç
-    if(dist < threshold){
+    if(dist < rect.width/2 + 45){
       lastDodge = now;
       moveNoButton();
     }
   }
 
-  noBtn.addEventListener('mouseenter', function(){
-    if(tries < FINAL_TRY) moveNoButton();
-  });
-  // Dokunmatik ekranlarda parmak yaklaşınca kaçsın (hover taklidi)
+  noBtn.addEventListener('mouseenter', function(){ if(tries < FINAL_TRY) moveNoButton(); });
   document.addEventListener('touchmove', function(e){
     if(tries >= FINAL_TRY) return;
     const t = e.touches[0];
     if(t) maybeDodgeNear(t.clientX, t.clientY);
   }, {passive:true});
+  
   noBtn.addEventListener('touchstart', function(e){
     if(tries < FINAL_TRY){ e.preventDefault(); moveNoButton(); }
     else { e.preventDefault(); goHeartbreak(); }
   }, {passive:false});
+
   noBtn.addEventListener('click', function(e){
     e.preventDefault();
     if(tries < FINAL_TRY){
@@ -565,9 +878,59 @@
     }
   });
 
+
+  /* ----------------------------------------------------
+     SCREEN NAVIGATION & SELECTION
+  ---------------------------------------------------- */
+  let selectedTitle = '';
+  let selectedDesc = '';
+
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function goDateType(){
+    initAudio();
+    playChime();
+    launchConfetti();
+    showScreen('screenBoat');
+    startBoatScene();
+  }
+
+  function finishBoatScene(){
+    playPop();
+    stopBoatScene();
+    showScreen('screen2');
+  }
+
+  function replayBoatScene(){
+    playPop();
+    startBoatScene();
+  }
+
+  function selectDateOption(title, desc){
+    playChime();
+    selectedTitle = title;
+    selectedDesc = desc;
+    showScreen('screenDatePixel');
+    startDatePixelScene(title);
+    launchConfetti();
+  }
+
+  function goTicketScreen(){
+    playChime();
+    stopDatePixelScene();
+    document.getElementById('ticketTitle').textContent = selectedTitle || 'Buluşma';
+    document.getElementById('ticketDesc').textContent = selectedDesc || 'Özel planımız';
+    document.getElementById('ticketNo').textContent = '#' + Math.floor(1000 + Math.random()*8999);
+    showScreen('screen3');
+    launchConfetti();
+  }
+
   function goHeartbreak(){
     showScreen('screen4');
-    // animasyonları her seferinde yeniden oynat
     document.querySelectorAll('#screen4 .heart-half').forEach(el=>{
       el.style.animation = 'none';
       void el.offsetWidth;
@@ -576,11 +939,84 @@
     spawnMiniHearts();
   }
 
+  function restart(){
+    playPop();
+    tries = 0;
+    noBtn.textContent = 'Hayır';
+    noBtn.style.position = '';
+    noBtn.style.left = '';
+    noBtn.style.top = '';
+    noBtn.style.transform = '';
+    noBtn.style.opacity = '';
+    yesBtn.style.transform = '';
+    noHint.textContent = '';
+    const mh = document.getElementById('miniHearts');
+    if(mh) mh.innerHTML = '';
+    stopBoatScene();
+    stopDatePixelScene();
+    showScreen('screen1');
+  }
+
+
+  /* ----------------------------------------------------
+     SPARKLE & CONFETTI FX
+  ---------------------------------------------------- */
+  function launchConfetti(){
+    const colors = ['#E8703A','#E8A5A0','#F3E6C8','#FFD700','#17545F'];
+    for(let i=0;i<45;i++){
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      const size = 6 + Math.random()*8;
+      el.style.width = size+'px';
+      el.style.height = size*0.45+'px';
+      el.style.left = Math.random()*100+'vw';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.transform = `rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(el);
+      const duration = 2200 + Math.random()*1800;
+      const drift = (Math.random()-0.5)*220;
+      el.animate([
+        { transform: el.style.transform + ' translate(0,0)', opacity:1 },
+        { transform: `rotate(${Math.random()*720}deg) translate(${drift}px, 100vh)`, opacity:0.9 }
+      ], { duration, easing:'cubic-bezier(.2,.6,.4,1)' });
+      setTimeout(()=> el.remove(), duration+50);
+    }
+  }
+
+  function triggerHeroClick(e){
+    initAudio();
+    playPop();
+    spawnHeartBurst(e.clientX, e.clientY);
+  }
+
+  function spawnHeartBurst(x,y){
+    const hearts = ['💖','✨','🌅','🌸','💕'];
+    for(let i=0; i<6; i++){
+      const el = document.createElement('span');
+      el.style.position = 'fixed';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.fontSize = (16 + Math.random()*12) + 'px';
+      el.style.pointerEvents = 'none';
+      el.style.zIndex = '999';
+      el.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      document.body.appendChild(el);
+
+      const dx = (Math.random() - 0.5) * 120;
+      const dy = -60 - Math.random() * 80;
+      el.animate([
+        { transform:'translate(0,0) scale(0.5)', opacity:1 },
+        { transform:`translate(${dx}px, ${dy}px) scale(1.3)`, opacity:0 }
+      ], { duration:1000, easing:'ease-out' });
+      setTimeout(()=> el.remove(), 1000);
+    }
+  }
+
   function spawnMiniHearts(){
     const host = document.getElementById('miniHearts');
     host.innerHTML = '';
     const glyphs = ['🤍','💔','✨'];
-    for(let i=0;i<10;i++){
+    for(let i=0;i<12;i++){
       const el = document.createElement('span');
       el.className = 'mini-heart';
       el.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
@@ -592,70 +1028,36 @@
     }
   }
 
-  function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 3200);
   }
 
-  function goDateType(){
-    launchConfetti();
-    showScreen('screenBoat');
-    startBoatScene();
+  function copyInvitationText(){
+    playPop();
+    const title = document.getElementById('ticketTitle').textContent;
+    const text = `Diana, randevu biletimiz kesildi! 🎟️✨\nEtkinlik: ${title}\nLokasyon: Antalya\nDM'den saati kararlaştıralım 😊`;
+    navigator.clipboard.writeText(text).then(()=>{
+      showToast('Mesaj kopyalandı! DM\'den yollayabilirsin 💌');
+    }).catch(()=>{
+      showToast('Bilet hazır! DM\'den yazabilirsin 😊');
+    });
   }
 
-  function finishBoatScene(){
-    stopBoatScene();
-    showScreen('screen2');
+  function openWhatsAppDirect(){
+    playPop();
+    const title = document.getElementById('ticketTitle').textContent;
+    const text = `Diana, randevu biletimiz kesildi! 🎟️✨\nEtkinlik: ${title}\nLokasyon: Antalya\nSaat ve günü konuşalım 😊`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
   }
 
-  function selectDate(title, desc){
-    document.getElementById('ticketTitle').textContent = title;
-    document.getElementById('ticketDesc').textContent = desc;
-    document.getElementById('ticketNo').textContent = '#' + Math.floor(1000 + Math.random()*8999);
-    showScreen('screen3');
-    launchConfetti();
-  }
 
-  function restart(){
-    tries = 0;
-    noBtn.textContent = 'Hayır';
-    noBtn.style.position = '';
-    noBtn.style.left = '';
-    noBtn.style.top = '';
-    noBtn.style.transform = '';
-    noBtn.style.opacity = '';
-    noBtn.style.pointerEvents = '';
-    yesBtn.style.transform = '';
-    noHint.textContent = '';
-    const mh = document.getElementById('miniHearts');
-    if(mh) mh.innerHTML = '';
-    stopBoatScene();
-    showScreen('screen1');
-  }
-
-  function launchConfetti(){
-    const colors = ['#E8703A','#E8A5A0','#F3E6C8','#17545F'];
-    for(let i=0;i<40;i++){
-      const el = document.createElement('div');
-      el.className = 'confetti';
-      const size = 5 + Math.random()*7;
-      el.style.width = size+'px';
-      el.style.height = size*0.4+'px';
-      el.style.left = Math.random()*100+'vw';
-      el.style.background = colors[Math.floor(Math.random()*colors.length)];
-      el.style.transform = `rotate(${Math.random()*360}deg)`;
-      document.body.appendChild(el);
-      const duration = 2200 + Math.random()*1800;
-      const drift = (Math.random()-0.5)*200;
-      el.animate([
-        { transform: el.style.transform + ' translate(0,0)', opacity:1 },
-        { transform: `rotate(${Math.random()*720}deg) translate(${drift}px, 100vh)`, opacity:0.9 }
-      ], { duration, easing:'cubic-bezier(.2,.6,.4,1)' });
-      setTimeout(()=> el.remove(), duration+50);
-    }
-  }
-
-  // ---- PİKSEL SAHNE: İskele → El uzatma → Yat → Güneşe doğru ----
+  /* ----------------------------------------------------
+     PİKSEL SAHNE 1 (TEKNE SAHNESİ)
+  ---------------------------------------------------- */
   const boatCanvas = document.getElementById('boatCanvas');
   const bctx = boatCanvas.getContext('2d');
   const BW = boatCanvas.width, BH = boatCanvas.height;
@@ -671,27 +1073,31 @@
     shirt:'#2E6F8E', pants:'#12343B',
     dress:'#E38AA0', dressDark:'#C96C88',
     hull:'#F3E6C8', hullTrim:'#0E3B45', sail:'#FBF3E4',
-    heart:'#E8703A'
+    heart:'#E8703A', cloud:'rgba(255,255,255,0.45)', lighthouse:'#E8E8E8'
   };
 
   let boatAnim = null;
   let boatStart = null;
+  let pixelParticles = [];
 
-  function px(x,y,w,h,color){ bctx.fillStyle = color; bctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); }
+  function px(x,y,w,h,color, context = bctx){ context.fillStyle = color; context.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); }
 
-  function drawSky(sunX){
+  function drawSky(sunX, t){
     px(0,0,BW,HORIZON*0.35,PAL.sky1);
     px(0,HORIZON*0.35,BW,HORIZON*0.3,PAL.sky2);
     px(0,HORIZON*0.65,BW,HORIZON*0.35,PAL.sky3);
-    // glow behind sun
-    for(let r=22; r>0; r-=4){
-      bctx.globalAlpha = 0.10;
+    for(let r=24; r>0; r-=4){
+      bctx.globalAlpha = 0.09;
       bctx.fillStyle = PAL.sunGlow;
       bctx.beginPath(); bctx.arc(sunX,HORIZON-6,r,0,Math.PI*2); bctx.fill();
     }
     bctx.globalAlpha = 1;
     bctx.fillStyle = PAL.sun;
     bctx.beginPath(); bctx.arc(sunX,HORIZON-6,9,0,Math.PI*2); bctx.fill();
+    const cloud1X = ( (t*8) % (BW+40) ) - 40;
+    const cloud2X = ( (t*12 + 80) % (BW+50) ) - 50;
+    px(cloud1X, 12, 24, 6, PAL.cloud); px(cloud1X+6, 8, 14, 4, PAL.cloud);
+    px(cloud2X, 22, 30, 7, PAL.cloud); px(cloud2X+8, 18, 16, 5, PAL.cloud);
   }
 
   function drawSea(t){
@@ -701,14 +1107,27 @@
       const shade = i < rows*0.35 ? PAL.sea1 : (i < rows*0.7 ? PAL.sea2 : PAL.sea3);
       px(0,y,BW,1,shade);
     }
-    // hareketli parıltı çizgileri
-    bctx.fillStyle = 'rgba(243,230,200,0.35)';
     for(let i=0;i<14;i++){
       const y = HORIZON + 4 + (i*6);
       if(y >= BH) continue;
       const offset = ( (t*22) + i*17 ) % (BW+20) - 20;
       px(offset, y, 6, 1, 'rgba(243,230,200,0.3)');
     }
+  }
+
+  function drawLighthouse(t){
+    px(175, HORIZON-16, 5, 16, PAL.lighthouse);
+    px(174, HORIZON-18, 7, 2, '#3A2317');
+    const beamAngle = Math.sin(t*2.5)*0.5;
+    bctx.globalAlpha = 0.25;
+    bctx.fillStyle = '#FFEFC7';
+    bctx.beginPath();
+    bctx.moveTo(177, HORIZON-17);
+    bctx.lineTo(177 + Math.cos(beamAngle)*60, HORIZON-17 + Math.sin(beamAngle)*20);
+    bctx.lineTo(177 + Math.cos(beamAngle)*60, HORIZON-17 + Math.sin(beamAngle)*20 + 15);
+    bctx.closePath();
+    bctx.fill();
+    bctx.globalAlpha = 1;
   }
 
   function drawDock(){
@@ -730,33 +1149,27 @@
     bctx.globalAlpha = 1;
   }
 
-  // person: x,y = ayak noktası (feet). dress=true -> Diana. armT: 0-1 kolun uzanma oranı, dir: 1 sağa / -1 sola
   function drawPerson(x,y,dress,armT,dir){
     const skin=PAL.skin;
-    // bacaklar
     if(!dress){
       px(x-2,y-6,2,6,PAL.pants);
       px(x+1,y-6,2,6,PAL.pants);
     } else {
       px(x-3,y-6,6,6,PAL.dressDark);
     }
-    // gövde / elbise
     if(dress){
       px(x-4,y-13,8,7,PAL.dress);
     } else {
       px(x-3,y-13,6,7,PAL.shirt);
     }
-    // uzayan kol (el uzatma)
     if(armT > 0){
       const len = 10*armT;
       px(x + dir*3, y-11, dir*len, 2, skin);
-      px(x + dir*(3+len), y-12, 2, 2, skin); // el
+      px(x + dir*(3+len), y-12, 2, 2, skin);
     } else {
       px(x + dir*3, y-11, dir*2, 5, skin);
     }
-    // baş
     px(x-2,y-19,5,5,skin);
-    // saç
     if(dress){
       px(x-3,y-21,7,3,PAL.hairD);
       px(x-3,y-18,1,5,PAL.hairD);
@@ -767,12 +1180,9 @@
   }
 
   function drawYacht(x,y,scale,sailT){
-    // gövde
     px(x-16*scale, y-2*scale, 32*scale, 5*scale, PAL.hull);
     px(x-13*scale, y+3*scale, 26*scale, 2*scale, PAL.hullTrim);
-    // direk
     px(x-1*scale, y-24*scale, 2*scale, 24*scale, PAL.hullTrim);
-    // yelken (hafif dalgalanma)
     const flutter = Math.sin(sailT)*3*scale;
     bctx.beginPath();
     bctx.moveTo(x, y-22*scale);
@@ -785,10 +1195,27 @@
 
   function ease(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
 
+  function triggerPixelClick(e){
+    const rect = boatCanvas.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) * (BW / rect.width);
+    const cy = (e.clientY - rect.top) * (BH / rect.height);
+    initAudio();
+    playPop();
+    for(let i=0; i<8; i++){
+      pixelParticles.push({
+        x: cx, y: cy,
+        vx: (Math.random()-0.5)*3,
+        vy: -1.5 - Math.random()*2,
+        color: ['#FFD700','#E8703A','#E8A5A0','#FBF3E4'][Math.floor(Math.random()*4)],
+        life: 1
+      });
+    }
+  }
+
   function drawBoatFrame(elapsed){
-    const A = 2200;   // dock + kalp atışı
-    const B = 1500;   // el uzatma + biniş
-    const C = 4300;   // güneşe doğru yelken
+    const A = 2400;
+    const B = 1600;
+    const C = 4500;
     const total = A+B+C;
 
     bctx.clearRect(0,0,BW,BH);
@@ -796,9 +1223,13 @@
     let sunX = 150;
     let seaT = elapsed/1000;
 
+    drawSky(sunX, seaT);
+    drawSea(seaT);
+    drawLighthouse(seaT);
+
     if(elapsed < A){
-      boatCaption.textContent = 'Kalbim küt küt atıyor...';
-      drawSky(sunX); drawSea(seaT); drawDock();
+      boatCaption.textContent = 'Antalya 18:30 · Kalbim küt küt atıyor...';
+      drawDock();
       drawPerson(30, HORIZON+2, false, 0, 1);
       drawPerson(48, HORIZON+2, true, 0, -1);
       const pulse = 1 + 0.18*Math.sin(elapsed/180);
@@ -807,8 +1238,8 @@
     }
     else if(elapsed < A+B){
       const t = ease((elapsed-A)/B);
-      boatCaption.textContent = 'Elimi uzatıyorum, gel...';
-      drawSky(sunX); drawSea(seaT); drawDock();
+      boatCaption.textContent = 'Elimi uzatıyorum, gel... ✨';
+      drawDock();
       const meX = 30 + t*8;
       const dianaX = 48 - t*18;
       drawYacht(84, HORIZON+3, 1, elapsed/260);
@@ -816,28 +1247,34 @@
       drawPerson(dianaX, HORIZON+2, true, Math.min(t*2,1), -1);
     }
     else if(elapsed < total){
-      const t = (elapsed-A-B)/C; // 0..1
+      const t = (elapsed-A-B)/C;
       const et = ease(t);
-      boatCaption.textContent = t < 0.5 ? 'Güneşe doğru yelken açıyoruz 🌅' : 'Bu daha başlangıç...';
+      boatCaption.textContent = t < 0.5 ? 'Güneşe doğru yelken açıyoruz 🌅' : 'Bu harika bir başlangıç olacak...';
       const boatX = 90 + et*95;
       const boatScale = 1 - et*0.35;
-      const sX = 150 - et*10;
-      drawSky(sX); drawSea(seaT); 
       if(et < 0.15) drawDock();
       drawYacht(boatX, HORIZON+3, boatScale, elapsed/220);
-      // güvertede iki küçük figür
       px(boatX-4*boatScale, HORIZON-5*boatScale, 3*boatScale, 6*boatScale, PAL.shirt);
       px(boatX+1*boatScale, HORIZON-5*boatScale, 3*boatScale, 6*boatScale, PAL.dress);
     }
-    else{
-      finishBoatScene();
-      return;
+    else {
+      boatCaption.textContent = 'Harika bir buluşma bizi bekliyor 💖';
+      drawYacht(185, HORIZON+3, 0.65, elapsed/220);
     }
 
-    if(boatAnim) boatAnim = requestAnimationFrame(loop);
+    for(let i=pixelParticles.length-1; i>=0; i--){
+      const p = pixelParticles[i];
+      px(p.x, p.y, 2, 2, p.color);
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.04;
+      if(p.life <= 0) pixelParticles.splice(i, 1);
+    }
+
+    if(boatAnim) boatAnim = requestAnimationFrame(loopBoat);
   }
 
-  function loop(ts){
+  function loopBoat(ts){
     if(boatStart === null) boatStart = ts;
     drawBoatFrame(ts - boatStart);
   }
@@ -845,7 +1282,7 @@
   function startBoatScene(){
     boatStart = null;
     boatAnim = true;
-    boatAnim = requestAnimationFrame(loop);
+    boatAnim = requestAnimationFrame(loopBoat);
   }
 
   function stopBoatScene(){
@@ -854,30 +1291,263 @@
     boatStart = null;
   }
 
-  // ---- Ambient parçacıklar ----
+
+  /* ----------------------------------------------------
+     PİKSEL SAHNE 2 (SEÇİLEN BULUŞMA YERİNE ÖZEL PİKSEL ANİMASYON)
+  ---------------------------------------------------- */
+  const datePixelCanvas = document.getElementById('datePixelCanvas');
+  const dctx = datePixelCanvas.getContext('2d');
+  const DW = datePixelCanvas.width, DH = datePixelCanvas.height;
+  const datePixelCaption = document.getElementById('datePixelCaption');
+  const datePixelEyebrow = document.getElementById('datePixelEyebrow');
+
+  let datePixelAnim = null;
+  let datePixelStart = null;
+  let dateOptionType = 'Akşam Yemeği';
+  let dateParticles = [];
+
+  function triggerDatePixelClick(e){
+    const rect = datePixelCanvas.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) * (DW / rect.width);
+    const cy = (e.clientY - rect.top) * (DH / rect.height);
+    initAudio();
+    playPop();
+    for(let i=0; i<10; i++){
+      dateParticles.push({
+        x: cx, y: cy,
+        vx: (Math.random()-0.5)*3.5,
+        vy: -1.8 - Math.random()*2,
+        color: ['#FFD700','#E8703A','#E8A5A0','#FBF3E4','#E38AA0'][Math.floor(Math.random()*5)],
+        life: 1
+      });
+    }
+  }
+
+  function drawDatePixelFrame(elapsed){
+    dctx.clearRect(0,0,DW,DH);
+    const t = elapsed/1000;
+
+    if(dateOptionType === 'Akşam Yemeği'){
+      datePixelEyebrow.textContent = 'Mumlu Akşam Yemeği · Antalya';
+      datePixelCaption.textContent = 'Mumlu masada şaraplar kadehte, zaman dursun... 🍷';
+      
+      px(0,0,DW,60,'#0A2429',dctx);
+      px(0,60,DW,48,'#0E3B45',dctx);
+      for(let i=0;i<20;i++){
+        const sx = (i*23 + 12)%DW, sy = (i*13 + 5)%45;
+        const tw = 0.5 + 0.5*Math.sin(t*3 + i);
+        dctx.globalAlpha = tw;
+        px(sx,sy,1,1,'#FFF3E9',dctx);
+      }
+      dctx.globalAlpha = 1;
+
+      px(0,52,DW,2,'#17545F',dctx);
+      px(0,54,DW,8,'#12343B',dctx);
+      for(let x=10;x<DW;x+=20){ px(x,46,3,8,'#12343B',dctx); }
+
+      px(66,74,60,30,'#8B5A2B',dctx);
+      px(68,72,56,2,'#E8703A',dctx);
+      px(72,104,4,12,'#6B3F1D',dctx); px(116,104,4,12,'#6B3F1D',dctx);
+
+      const flick = Math.sin(t*8)*1.5;
+      px(94,62,4,10,'#FBF3E4',dctx);
+      dctx.globalAlpha = 0.3; dctx.fillStyle = '#FFD700';
+      dctx.beginPath(); dctx.arc(96, 60, 8 + flick, 0, Math.PI*2); dctx.fill();
+      dctx.globalAlpha = 1;
+      px(95,58,2,3,'#E8703A',dctx);
+
+      px(82,66,4,6,'#E8703A',dctx); px(106,66,4,6,'#E8703A',dctx);
+
+      px(50,78,12,18,PAL.shirt,dctx);
+      px(53,68,8,10,PAL.skin,dctx);
+      px(52,66,10,4,PAL.hair,dctx);
+      const armT = Math.sin(t*2)*2;
+      px(62,76 + armT,8,2,PAL.skin,dctx);
+
+      px(130,76,12,20,PAL.dress,dctx);
+      px(132,66,8,10,PAL.skin,dctx);
+      px(131,64,10,6,PAL.hairD,dctx);
+      px(122,76 - armT,8,2,PAL.skin,dctx);
+
+      const heartY = 48 - ( (t*20)%30 );
+      drawHeart(96, heartY, 0.8, 0.85);
+
+    } else if(dateOptionType === 'Kahve & Tatlı'){
+      datePixelEyebrow.textContent = 'Kahve & Tatlı Sohbeti';
+      datePixelCaption.textContent = 'Sıcak bir kahve, tatlı sohbetler ve unutulmaz anlar... ☕';
+
+      px(0,0,DW,70,'#17545F',dctx);
+      px(0,70,DW,38,'#0A2429',dctx);
+
+      for(let x=10;x<DW;x+=18){
+        px(x,14,3,3, (Math.floor(t*4 + x)%2===0 ? '#FFD700':'#F3A65B'),dctx);
+        px(x+1,0,1,14,'rgba(243,230,200,0.4)',dctx);
+      }
+
+      px(20,24,152,46,'#124B58',dctx);
+      px(24,28,68,38,'#FFEFC7',dctx);
+      px(100,28,68,38,'#FFEFC7',dctx);
+
+      px(76,72,40,24,'#8B5A2B',dctx);
+      px(82,96,4,12,'#6B3F1D',dctx); px(106,96,4,12,'#6B3F1D',dctx);
+
+      px(86,66,6,6,'#FBF3E4',dctx); px(100,66,6,6,'#FBF3E4',dctx);
+      const steamY = 60 - ((t*15)%16);
+      px(88,steamY,2,4,'rgba(255,255,255,0.7)',dctx);
+      px(102,steamY-3,2,4,'rgba(255,255,255,0.7)',dctx);
+
+      px(60,74,10,18,PAL.shirt,dctx); px(62,64,7,10,PAL.skin,dctx); px(61,62,9,4,PAL.hair,dctx);
+      px(122,72,10,20,PAL.dress,dctx); px(123,62,7,10,PAL.skin,dctx); px(122,60,9,6,PAL.hairD,dctx);
+
+    } else if(dateOptionType === 'Sahilde Yürüyüş'){
+      datePixelEyebrow.textContent = 'Sahilde Gün Batımı Yürüyüşü';
+      datePixelCaption.textContent = 'Deniz kokusu, tatlı rüzgar ve el ele atılan adımlar... 🌊';
+
+      px(0,0,DW,40,'#E8703A',dctx);
+      px(0,40,DW,25,'#17545F',dctx);
+      px(0,65,DW,43,'#F3E6C8',dctx);
+
+      const waveX = Math.sin(t*2)*8;
+      px(0,62+waveX,DW,4,'#CBDEE0',dctx);
+
+      dctx.fillStyle = '#FFEFC7';
+      dctx.beginPath(); dctx.arc(160,35,10,0,Math.PI*2); dctx.fill();
+
+      const walkX = ( (t*25) % (DW+40) ) - 20;
+      const legAnim = Math.sin(t*8)*3;
+
+      px(walkX, 74, 3, 10+legAnim, PAL.pants, dctx);
+      px(walkX+4, 74, 3, 10-legAnim, PAL.pants, dctx);
+      px(walkX-1, 60, 9, 14, PAL.shirt, dctx);
+      px(walkX+1, 51, 6, 8, PAL.skin, dctx);
+      px(walkX, 49, 8, 4, PAL.hair, dctx);
+
+      px(walkX+10, 74, 4, 10-legAnim, PAL.dressDark, dctx);
+      px(walkX+14, 74, 4, 10+legAnim, PAL.dressDark, dctx);
+      px(walkX+9, 58, 10, 16, PAL.dress, dctx);
+      px(walkX+11, 50, 6, 8, PAL.skin, dctx);
+      px(walkX+10, 48, 8, 6, PAL.hairD, dctx);
+
+      px(walkX+7, 66, 4, 2, PAL.skin, dctx);
+
+      for(let fx=10; fx<walkX; fx+=14){
+        px(fx,82,3,1,'#8B5A2B',dctx);
+        px(fx+4,86,3,1,'#8B5A2B',dctx);
+      }
+
+    } else { // Sürpriz Rota
+      datePixelEyebrow.textContent = 'Sürpriz Buluşma Rotası';
+      datePixelCaption.textContent = 'Nereye gideceğiz sır... Sadece hazır ol! 🗺️✨';
+
+      px(0,0,DW,50,'#0A2429',dctx);
+      px(0,50,DW,58,'#12343B',dctx);
+
+      for(let i=0;i<18;i++){
+        const sx = (i*29)%DW, sy = (i*17)%42;
+        px(sx,sy,1,1,'#FFD700',dctx);
+      }
+
+      px(0,72,DW,26,'#0E3B45',dctx);
+      const dashOffset = ((t*60)%30);
+      for(let rx=-30+dashOffset; rx<DW; rx+=30){
+        px(rx,84,14,2,'#F3E6C8',dctx);
+      }
+
+      const carX = 70;
+      px(carX,66,48,16,'#E8703A',dctx);
+      px(carX+8,60,32,6,'#FBF3E4',dctx);
+      px(carX+6,78,8,8,'#0A2429',dctx);
+      px(carX+34,78,8,8,'#0A2429',dctx);
+      dctx.globalAlpha = 0.35; dctx.fillStyle = '#FFEFC7';
+      dctx.beginPath();
+      dctx.moveTo(carX+48,70); dctx.lineTo(DW,60); dctx.lineTo(DW,90);
+      dctx.closePath(); dctx.fill(); dctx.globalAlpha = 1;
+
+      px(carX+14,54,6,7,PAL.skin,dctx); px(carX+13,52,8,3,PAL.hair,dctx);
+      px(carX+26,54,6,7,PAL.skin,dctx); px(carX+25,51,8,5,PAL.hairD,dctx);
+
+      const giftY = 32 + Math.sin(t*3)*4;
+      px(140,giftY,12,12,'#E8A5A0',dctx);
+      px(145,giftY,2,12,'#FFD700',dctx);
+      px(140,giftY+5,12,2,'#FFD700',dctx);
+    }
+
+    for(let i=dateParticles.length-1; i>=0; i--){
+      const p = dateParticles[i];
+      px(p.x, p.y, 2, 2, p.color, dctx);
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.04;
+      if(p.life <= 0) dateParticles.splice(i, 1);
+    }
+
+    if(datePixelAnim) datePixelAnim = requestAnimationFrame(loopDatePixel);
+  }
+
+  function loopDatePixel(ts){
+    if(datePixelStart === null) datePixelStart = ts;
+    drawDatePixelFrame(ts - datePixelStart);
+  }
+
+  function startDatePixelScene(title){
+    dateOptionType = title;
+    datePixelStart = null;
+    datePixelAnim = true;
+    datePixelAnim = requestAnimationFrame(loopDatePixel);
+  }
+
+  function stopDatePixelScene(){
+    if(datePixelAnim) cancelAnimationFrame(datePixelAnim);
+    datePixelAnim = null;
+    datePixelStart = null;
+  }
+
+  function replayDatePixelScene(){
+    playPop();
+    startDatePixelScene(dateOptionType);
+  }
+
+
+  /* ----------------------------------------------------
+     BACKGROUND PARALLAX CANVAS & SHOOTING STARS
+  ---------------------------------------------------- */
   (function(){
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let w, h, particles;
+    let w, h, particles, shootingStars = [];
 
     function resize(){
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
     }
     function makeParticles(){
-      const count = Math.min(90, Math.floor((w*h)/18000));
+      const count = Math.min(100, Math.floor((w*h)/16000));
       particles = Array.from({length: count}, () => ({
         x: Math.random()*w,
         y: Math.random()*h,
-        r: 0.6 + Math.random()*1.6,
+        r: 0.6 + Math.random()*1.8,
         s: 0.15 + Math.random()*0.35,
         drift: (Math.random()-0.5)*0.25,
         phase: Math.random()*Math.PI*2
       }));
     }
+
+    function maybeAddShootingStar(){
+      if(Math.random() < 0.015 && shootingStars.length < 2){
+        shootingStars.push({
+          x: Math.random()*w,
+          y: Math.random()*(h*0.4),
+          len: 40 + Math.random()*60,
+          speed: 12 + Math.random()*8,
+          life: 1
+        });
+      }
+    }
+
     function tick(t){
       ctx.clearRect(0,0,w,h);
+      
       ctx.fillStyle = '#F3E6C8';
       particles.forEach(p=>{
         const twinkle = 0.35 + 0.35*Math.sin(t/900 + p.phase);
@@ -889,6 +1559,27 @@
         p.x += p.drift;
         if(p.y < -5){ p.y = h+5; p.x = Math.random()*w; }
       });
+
+      maybeAddShootingStar();
+      for(let i=shootingStars.length-1; i>=0; i--){
+        const s = shootingStars[i];
+        ctx.globalAlpha = s.life;
+        const grad = ctx.createLinearGradient(s.x, s.y, s.x - s.len, s.y + s.len*0.6);
+        grad.addColorStop(0, '#FFEFC7');
+        grad.addColorStop(1, 'transparent');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - s.len, s.y + s.len*0.6);
+        ctx.stroke();
+
+        s.x += s.speed;
+        s.y += s.speed*0.6;
+        s.life -= 0.035;
+        if(s.life <= 0) shootingStars.splice(i, 1);
+      }
+
       ctx.globalAlpha = 1;
       if(!reduce) requestAnimationFrame(tick);
     }
@@ -897,53 +1588,105 @@
     makeParticles();
     window.addEventListener('resize', ()=>{ resize(); makeParticles(); });
 
-    if(reduce){
-      tick(0); // draw one static frame only
-    } else {
-      requestAnimationFrame(tick);
-    }
+    if(reduce){ tick(0); }
+    else { requestAnimationFrame(tick); }
   })();
-</script>
 
-<!-- download helpers -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-async function ensureRenderReady(){
-  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
-  // small delay to let layout settle
-  await new Promise(r=>setTimeout(r,150));
-}
-async function downloadTicketPNG(){
-  const el = document.querySelector('.ticket');
-  if(!el) return alert('Bilet bulunamadı');
-  await ensureRenderReady();
-  el.scrollIntoView({block:'center', inline:'center'});
-  const scale = Math.min(3, (window.devicePixelRatio || 1) * 2);
-  const canvas = await html2canvas(el, {scale, backgroundColor:null, useCORS:true, allowTaint:false});
-  const dataUrl = canvas.toDataURL('image/png');
-  const a = document.createElement('a');
-  a.href = dataUrl;
-  const name = (document.getElementById('ticketTitle')?.textContent || 'bilet').replace(/\s+/g,'_');
-  a.download = name + '.png';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-async function downloadTicketPDF(){
-  const el = document.querySelector('.ticket');
-  if(!el) return alert('Bilet bulunamadı');
-  await ensureRenderReady();
-  el.scrollIntoView({block:'center', inline:'center'});
-  const scale = Math.min(3, (window.devicePixelRatio || 1) * 2);
-  const canvas = await html2canvas(el, {scale, backgroundColor:'#ffffff', useCORS:true, allowTaint:false});
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({orientation: canvas.width > canvas.height ? 'landscape' : 'portrait', unit:'px', format:[canvas.width, canvas.height]});
-  pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-  const name = (document.getElementById('ticketTitle')?.textContent || 'bilet').replace(/\s+/g,'_');
-  pdf.save(name + '.pdf');
-}
+
+  /* ----------------------------------------------------
+     3D TILT EFFECT ON CARDS
+  ---------------------------------------------------- */
+  document.querySelectorAll('.option, .ticket').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width/2;
+      const y = e.clientY - rect.top - rect.height/2;
+      card.style.transform = `rotateY(${x/18}deg) rotateX(${-y/18}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateY(0deg) rotateX(0deg) translateY(0px)';
+    });
+  });
+
+
+  /* ----------------------------------------------------
+     HIGH RESOLUTION & HIGH CONTRAST TICKET EXPORT (PNG & PDF)
+  ---------------------------------------------------- */
+  async function ensureRenderReady(){
+    try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
+    await new Promise(r=>setTimeout(r,150));
+  }
+
+  async function downloadTicketPNG(){
+    playPop();
+    const el = document.getElementById('ticketCard');
+    if(!el) return alert('Bilet bulunamadı');
+    await ensureRenderReady();
+
+    // Reset 3D tilt transform temporarily for ultra-crisp render
+    const origTransform = el.style.transform;
+    el.style.transform = 'none';
+    
+    el.scrollIntoView({block:'center', inline:'center'});
+    
+    // Render high resolution crisp image (3x device scale)
+    const scale = 3;
+    const canvas = await html2canvas(el, {
+      scale: scale,
+      backgroundColor: '#FFF6E5',
+      useCORS: true,
+      allowTaint: false,
+      logging: false
+    });
+    
+    // Restore tilt transform
+    el.style.transform = origTransform;
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    const name = (document.getElementById('ticketTitle')?.textContent || 'bilet').replace(/\s+/g,'_');
+    a.download = 'Diana_Randevu_Bileti_' + name + '.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    showToast('PNG Bilet yüksek kalitede indirildi! 🖼️');
+  }
+
+  async function downloadTicketPDF(){
+    playPop();
+    const el = document.getElementById('ticketCard');
+    if(!el) return alert('Bilet bulunamadı');
+    await ensureRenderReady();
+
+    const origTransform = el.style.transform;
+    el.style.transform = 'none';
+    
+    el.scrollIntoView({block:'center', inline:'center'});
+    
+    const scale = 3;
+    const canvas = await html2canvas(el, {
+      scale: scale,
+      backgroundColor: '#FFF6E5',
+      useCORS: true,
+      allowTaint: false,
+      logging: false
+    });
+
+    el.style.transform = origTransform;
+
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+      unit:'px',
+      format:[canvas.width, canvas.height]
+    });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    const name = (document.getElementById('ticketTitle')?.textContent || 'bilet').replace(/\s+/g,'_');
+    pdf.save('Diana_Randevu_Bileti_' + name + '.pdf');
+    showToast('PDF Bilet yüksek kalitede indirildi! 📄');
+  }
 </script>
 </body>
 </html>
